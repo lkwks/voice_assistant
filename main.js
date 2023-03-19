@@ -42,7 +42,7 @@ function start_recording()
       var chunks = [];
   
       mediaRecorder.start();
-      console.log("good"!);
+      console.log("good");
       mediaRecorder.ondataavailable = function(e) {
           console.log(e);
         chunks.push(e.data);
