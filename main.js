@@ -19,6 +19,7 @@ async function whisper_api(audioBlob)
 {
     var formData = new FormData();
     formData.append('model', 'whisper-1');
+    formData.append('response_format', 'text');
     formData.append('file', audioBlob, 'audio.webm');
 
     const response = await fetch("https://api.openai.com/v1/audio/translations", {
