@@ -42,8 +42,9 @@ function start_recording()
       var chunks = [];
   
       mediaRecorder.start();
-  
+      console.log("good"!);
       mediaRecorder.ondataavailable = function(e) {
+          console.log(e);
         chunks.push(e.data);
       }
   
@@ -63,5 +64,9 @@ document.addEventListener("keydown", e=>
 
 document.addEventListener("keyup", e=>
 {
-    if (e.key === " ") mediaRecorder.stop();
+    if (e.key === " ") 
+    {
+        console.log(1);
+        mediaRecorder.stop();
+    }
 });
