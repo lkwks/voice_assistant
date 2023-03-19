@@ -51,7 +51,7 @@ function start_recording()
       mediaRecorder.onstop = async function(e) {
         var blob = new Blob(chunks, { 'type' : 'audio/webm' });
         console.log(chunks);
-        var result = await whisper_api(blob);
+        var result = await whisper_api(blob[0]);
         console.log(result);
       }
     });    
