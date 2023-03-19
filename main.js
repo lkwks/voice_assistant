@@ -38,18 +38,16 @@ function start_recording()
 {
     navigator.mediaDevices.getUserMedia({ audio: true })
     .then(function(stream) {
-      mediaRecorder = new MediaRecorder(stream);
+      mediaRecorder = new MediaRecorder(stream, { type: 'audio/wav' });
       var chunks = [];
   
       mediaRecorder.start();
-      console.log("good");
       mediaRecorder.ondataavailable = function(e) {
-          console.log(e);
         chunks.push(e.data);
       }
   
       mediaRecorder.onstop = async function(e) {
-        var blob = new Blob(chunks, { 'type' : 'audio/ogg; codecs=opus' });
+        var blob = new Blob(chunks, { 'type' : 'audio/wav' });
         console.log(chunks);
         var result = await whisper_api(blob);
         console.log(result);
