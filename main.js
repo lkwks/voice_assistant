@@ -19,7 +19,7 @@ async function whisper_api(audioBlob)
 {
     var formData = new FormData();
     formData.append('model', 'whisper-1');
-    formData.append('file', audioBlob, 'audio.wav');
+    formData.append('file', audioBlob);
 
     const response = await fetch("https://api.openai.com/v1/audio/translations", {
         method: "POST",
