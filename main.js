@@ -49,6 +49,7 @@ function start_recording()
   
       mediaRecorder.onstop = async function(e) {
         var blob = new Blob(chunks, { 'type' : 'audio/ogg; codecs=opus' });
+        console.log(chunks);
         var result = await whisper_api(blob);
         console.log(result);
       }
