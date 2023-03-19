@@ -38,7 +38,10 @@ function start_recording()
 {
     navigator.mediaDevices.getUserMedia({ audio: true })
     .then(function(stream) {
-      mediaRecorder = new MediaRecorder(stream, { type: 'audio/wav' });
+      mediaRecorder = new MediaRecorder(stream, {
+        type: 'audio/mp3',
+        audioBitsPerSecond: 128000, // 비트레이트 설정
+      });
       var chunks = [];
   
       mediaRecorder.start();
@@ -47,7 +50,7 @@ function start_recording()
       }
   
       mediaRecorder.onstop = async function(e) {
-        var blob = new Blob(chunks, { 'type' : 'audio/wav' });
+        var blob = new Blob(chunks, { 'type' : 'audio/mp3' });
         console.log(chunks);
         var result = await whisper_api(blob);
         console.log(result);
