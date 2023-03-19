@@ -44,6 +44,7 @@ function start_recording()
       var chunks = [];
   
       mediaRecorder.start();
+        console.log("good");
       mediaRecorder.ondataavailable = function(e) {
         chunks.push(e.data);
       }
@@ -51,7 +52,7 @@ function start_recording()
       mediaRecorder.onstop = async function(e) {
         var blob = new Blob(chunks, { 'type' : 'audio/webm' });
         console.log(chunks);
-        var result = await whisper_api(blob[0]);
+        var result = await whisper_api(blob);
         console.log(result);
       }
     });    
