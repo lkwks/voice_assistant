@@ -19,7 +19,7 @@ async function whisper_api(audioBlob)
 {
     var formData = new FormData();
     formData.append('model', 'whisper-1');
-    formData.append('file', audioBlob);
+    formData.append('file', audioBlob, 'audio.webm');
 
     const response = await fetch("https://api.openai.com/v1/audio/translations", {
         method: "POST",
@@ -39,9 +39,7 @@ function start_recording()
     navigator.mediaDevices.getUserMedia({ audio: true })
     .then(function(stream) {
       mediaRecorder = new MediaRecorder(stream, {
-        type: 'audio/mp3',
-        audioBitsPerSecond: 128000, // 비트레이트 설정
-      });
+        type: 'audio/webm'});
       var chunks = [];
   
       mediaRecorder.start();
@@ -50,7 +48,7 @@ function start_recording()
       }
   
       mediaRecorder.onstop = async function(e) {
-        var blob = new Blob(chunks, { 'type' : 'audio/mp3' });
+        var blob = new Blob(chunks, { 'type' : 'audio/webm' });
         console.log(chunks);
         var result = await whisper_api(blob);
         console.log(result);
