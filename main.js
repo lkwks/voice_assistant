@@ -62,5 +62,5 @@ document.addEventListener("keyup", e=>
 
 const fileInput = document.getElementById('fileInput');
 fileInput.addEventListener('change', (event) => {
-  whisper_api(event.target.files[0]));
+  whisper_api(event.target.files[0]);
 });
