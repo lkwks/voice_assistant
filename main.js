@@ -15,7 +15,7 @@ async function chatgpt_api(messages)
     return await response.json();
 }
 
-async function whisper_api(file)
+async function whisper_api(filepath)
 {
     var formData = new FormData();
     formData.append('model', 'whisper-1');
@@ -43,7 +43,7 @@ navigator.mediaDevices.getUserMedia({ audio: true })
         var blob = new Blob(chunks, { 'type' : 'audio/webm' });
         var file = new File([blob], "audio.webm", { type: "audio/webm;" });
         console.log(URL.createObjectURL(file));
-        var result = await whisper_api(file);
+        var result = await whisper_api(URL.createObjectURL(file));
         console.log(result);
       };
     });
@@ -56,4 +56,11 @@ document.addEventListener("keydown", e=>
 document.addEventListener("keyup", e=>
 {
     if (e.key === " ") mediaRecorder.stop();
+});
+
+
+
+const fileInput = document.getElementById('fileInput');
+fileInput.addEventListener('change', (event) => {
+  whisper_api(event.target.files[0]));
 });
