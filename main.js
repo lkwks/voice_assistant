@@ -17,6 +17,7 @@ async function chatgpt_api(messages)
 
 async function whisper_api(file)
 {
+    console.log(file);
     var formData = new FormData();
     formData.append('model', 'whisper-1');
     formData.append('file', file);
@@ -61,6 +62,7 @@ document.addEventListener("keyup", e=>
 
 
 const fileInput = document.getElementById('fileInput');
-fileInput.addEventListener('change', (event) => {
-  whisper_api(event.target.files[0]);
+fileInput.addEventListener('change', async (event) => {
+  var result = await whisper_api(event.target.files[0]);
+    console.log(result);
 });
