@@ -43,7 +43,7 @@ navigator.mediaDevices.getUserMedia({ audio: true })
   
       mediaRecorder.onstop = async e => {
         var blob = new Blob(chunks, { 'type' : 'audio/webm' });
-        console.log(chunks);
+        console.log(chunks, blob);
         var result = await whisper_api(blob);
         console.log(result);
       };
