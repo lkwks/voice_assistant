@@ -51,7 +51,7 @@ navigator.mediaDevices.getUserMedia({ audio: true })
 
 document.addEventListener("keydown", e=>
 {
-    if (e.key === " ") mediaRecorder.start();
+    if (e.key === " " && mediaRecorder.state !== "recording") mediaRecorder.start();
 });
 
 document.addEventListener("keyup", e=>
