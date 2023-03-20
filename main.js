@@ -15,12 +15,11 @@ async function chatgpt_api(messages)
     return await response.json();
 }
 
-async function whisper_api(audioBlob)
+async function whisper_api(file)
 {
     var formData = new FormData();
     formData.append('model', 'whisper-1');
-    formData.append('response_format', 'text');
-    formData.append('file', audioBlob, 'audio.webm');
+    formData.append('file', file, 'audio.webm');
 
     const response = await fetch("https://api.openai.com/v1/audio/translations", {
         method: "POST",
@@ -38,11 +37,12 @@ navigator.mediaDevices.getUserMedia({ audio: true })
     .then( stream => {
       var chunks=[];
       mediaRecorder = new MediaRecorder(stream, {type: 'audio/webm'});
-      mediaRecorder.ondataavailable = e => { console.log(e); chunks.push(e.data); }
+      mediaRecorder.ondataavailable = e => chunks.push(e.data);
   
       mediaRecorder.onstop = async e => {
         var blob = new Blob(chunks, { 'type' : 'audio/webm' });
-        var result = await whisper_api(blob);
+        var file = new File([blob], "audio.webm", { type: "audio/webm;" });
+        var result = await whisper_api(file);
         console.log(result);
       };
     });
