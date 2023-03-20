@@ -21,7 +21,7 @@ async function whisper_api(file)
     formData.append('model', 'whisper-1');
     formData.append('file', file);
 
-    const response = await fetch("https://api.openai.com/v1/audio/translations", {
+    const response = await fetch("https://api.openai.com/v1/audio/transcriptions", {
         method: "POST",
         headers: {
             "Content-Type": "multipart/form-data",
