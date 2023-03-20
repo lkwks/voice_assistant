@@ -15,7 +15,7 @@ async function chatgpt_api(messages)
     return await response.json();
 }
 
-async function whisper_api(filepath)
+async function whisper_api(file)
 {
     var formData = new FormData();
     formData.append('model', 'whisper-1');
