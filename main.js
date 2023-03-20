@@ -35,19 +35,18 @@ async function whisper_api(audioBlob)
 
 var mediaRecorder;
 navigator.mediaDevices.getUserMedia({ audio: true })
-    .then(function(stream) {
+    .then( stream => {
       mediaRecorder = new MediaRecorder(stream, {type: 'audio/webm'});
       var chunks = [];
-      mediaRecorder.ondataavailable = function(e) {
-        chunks.push(e.data);
-      }
+      mediaRecorder.ondataavailable = e => { console.log(1); chunks.push(e.data); }
+      
   
-      mediaRecorder.onstop = async function(e) {
+      mediaRecorder.onstop = async e => {
         var blob = new Blob(chunks, { 'type' : 'audio/webm' });
         console.log(chunks);
         var result = await whisper_api(blob);
         console.log(result);
-      }
+      };
     });
 
 document.addEventListener("keydown", e=>
