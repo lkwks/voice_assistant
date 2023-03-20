@@ -34,17 +34,10 @@ async function whisper_api(audioBlob)
 }
 
 var mediaRecorder;
-
-function start_recording()
-{
-    navigator.mediaDevices.getUserMedia({ audio: true })
+navigator.mediaDevices.getUserMedia({ audio: true })
     .then(function(stream) {
-      mediaRecorder = new MediaRecorder(stream, {
-        type: 'audio/webm'});
+      mediaRecorder = new MediaRecorder(stream, {type: 'audio/webm'});
       var chunks = [];
-  
-      mediaRecorder.start();
-        console.log("good");
       mediaRecorder.ondataavailable = function(e) {
         chunks.push(e.data);
       }
@@ -55,19 +48,14 @@ function start_recording()
         var result = await whisper_api(blob);
         console.log(result);
       }
-    });    
-}
+    });
 
 document.addEventListener("keydown", e=>
 {
-    if (e.key === " ") start_recording();
+    if (e.key === " ") mediaRecorder.start();
 });
 
 document.addEventListener("keyup", e=>
 {
-    if (e.key === " ") 
-    {
-        console.log(1);
-        mediaRecorder.stop();
-    }
+    if (e.key === " ") mediaRecorder.stop();
 });
