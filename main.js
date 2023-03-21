@@ -112,7 +112,7 @@ var mediaRecorder = null;
 
 document.addEventListener("keydown", e=>
 {
-    if (e.key === " " && mediaRecorder && mediaRecorder.state !== "recording") start_recording();
+    if (e.key === " " && (mediaRecorder === null || mediaRecorder && mediaRecorder.state !== "recording")) start_recording();
 });
 
 document.addEventListener("keyup", e=>
