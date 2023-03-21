@@ -32,6 +32,7 @@ main{
 button{
     width: 50%;
     height: 50%;
+    user-select: none;
 }
 
 input.system_message{
