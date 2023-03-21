@@ -1,6 +1,21 @@
 let API_KEY = localStorage.getItem("API_KEY");
 if (API_KEY && API_KEY !== "null") document.querySelector("div.API_KEY").classList.add("hide");
 
+class Messages{
+    constructor()
+    {
+        this.messages = [{role: "user", content: ""}];
+    }
+    
+    async send_chatgpt(content)
+    {
+        this.messages.push({role: "user", content: content});
+        var result = await chatgpt_api(this.messages);
+        console.log(result);
+    }
+}
+
+var messages = new Messages();
 
 async function chatgpt_api(messages)
 {
@@ -44,6 +59,8 @@ navigator.mediaDevices.getUserMedia({ audio: true })
         var file = new File([blob], "audio.webm", { type: "audio/webm;" });
         var result = await whisper_api(file);
         console.log(result);
+        messages.send_chatgpt(result.text);
+        chunks = [];
       };
     });
 
@@ -57,10 +74,3 @@ document.addEventListener("keyup", e=>
     if (e.key === " ") mediaRecorder.stop();
 });
 
-
-
-const fileInput = document.getElementById('fileInput');
-fileInput.addEventListener('change', async (event) => {
-  var result = await whisper_api(event.target.files[0]);
-    console.log(result);
-});
