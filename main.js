@@ -10,9 +10,9 @@ class Messages{
     async send_chatgpt(content)
     {
         this.messages.push({role: "user", content: content});
-        console.log(this.messages);
+        alert(this.messages);
         var result = await chatgpt_api(this.messages);
-        console.log(result.choices[0].message.content);
+        alert(result.choices[0].message.content);
         this.messages.push(result.choices[0].message);
     }
 }
@@ -27,10 +27,10 @@ async function chatgpt_api(messages)
             "Content-Type": "application/json",
             "Authorization": `Bearer ${localStorage.getItem("API_KEY")}`,
         },
-        body: JSON.stringify({ model: "gpt-3.5-turbo", messages: messages})
+        body: JSON.stringify({ model: "gpt-3.5-turbo", messages: messages, stream: true})
     });
-    console.log(response);
-    return await response.json();
+    alert(response.headers.get('content-type'));
+    return response;
 }
 
 async function whisper_api(file)
@@ -75,5 +75,15 @@ document.addEventListener("keydown", e=>
 document.addEventListener("keyup", e=>
 {
     if (e.key === " ") mediaRecorder.stop();
+});
+
+document.querySelector("button").addEventListener("touchstart", e=>
+{
+    if (mediaRecorder.state !== "recording") mediaRecorder.start();
+});
+
+document.querySelector("button").addEventListener("touchend", e=>
+{
+    mediaRecorder.stop();
 });
 
