@@ -10,6 +10,7 @@ class Messages{
     async send_chatgpt(content)
     {
         this.messages.push({role: "user", content: content});
+        console.log(this.messages);
         var result = await chatgpt_api(this.messages);
         console.log(result);
     }
@@ -27,6 +28,7 @@ async function chatgpt_api(messages)
         },
         body: JSON.stringify({ model: "gpt-3.5-turbo", messages: messages, stream: true})
     });
+    console.log(response);
     return await response.json();
 }
 
