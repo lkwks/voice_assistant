@@ -5,16 +5,55 @@ class Messages{
     constructor()
     {
         this.messages = [{role: "user", content: ""}];
+        this.messages_token = [0];
+        this.system_message = {role: "system", content: ""};
+        
+        this.event_source = new EventSource('https://api.openai.com/v1/chat/completions');
+        this.event_source.onmessage = e => {
+            const data = JSON.parse(e.data);
+            console.log(data);
+        };
+    }
+    
+    update_system_message(content)
+    {
+        this.system_message.content = content;
     }
     
     async send_chatgpt(content)
     {
         this.messages.push({role: "user", content: content});
-        alert(this.messages);
-        var result = await chatgpt_api(this.messages);
-        alert(result.choices[0].message.content);
-        this.messages.push(result.choices[0].message);
+        this.messages_token.push(content.split(" ").length * 5);
+        this.flush_if_too_many_tokens();
+        chatgpt_api([this.system_message, ...this.messages]);
     }
+    
+
+    flush_if_too_many_tokens()
+    {
+        let cutIndex = 0, now_count = 0;
+        const sum_of_tokens = arr => arr.reduce((acc, val) => acc + val, 0);
+        const token_sum = sum_of_tokens(this.messages_token);
+        const bucket_size = 3072;
+
+        if (token_sum < bucket_size) return;
+
+        for (var i=0; i<this.messages.length; i++)
+        {
+            if (this.messages_token.length >= i)
+                now_count += this.messages_token;
+            if (now_count > token_sum - bucket_size)
+            {
+                cutIndex = i;
+                break;
+            }
+        }
+
+        if (cutIndex === this.messages.length-1) cutIndex--;
+        this.messages = this.messages.slice(cutIndex, this.messages.length);
+        this.messages_token = this.messages_token.slice(cutIndex, this.messages_token.length);
+    }
+
 }
 
 var messages = new Messages();
@@ -29,8 +68,7 @@ async function chatgpt_api(messages)
         },
         body: JSON.stringify({ model: "gpt-3.5-turbo", messages: messages, stream: true})
     });
-    alert(response.headers.get('content-type'));
-    return response;
+    console.log(response);
 }
 
 async function whisper_api(file)
@@ -50,26 +88,31 @@ async function whisper_api(file)
     return await response.json();
 }
 
-var mediaRecorder;
-navigator.mediaDevices.getUserMedia({ audio: true })
-    .then( stream => {
-      var chunks=[];
-      mediaRecorder = new MediaRecorder(stream, {type: 'audio/webm'});
-      mediaRecorder.ondataavailable = e => chunks.push(e.data);
+function start_recording()
+{
+      navigator.mediaDevices.getUserMedia({ audio: true })
+      .then( stream => {
+        var chunks=[];
+        mediaRecorder = new MediaRecorder(stream, {type: 'audio/webm'});
+        mediaRecorder.ondataavailable = e => chunks.push(e.data);
   
-      mediaRecorder.onstop = async e => {
-        var blob = new Blob(chunks, { 'type' : 'audio/webm' });
-        var file = new File([blob], "audio.webm", { type: "audio/webm;" });
-        var result = await whisper_api(file);
-        console.log(result);
-        messages.send_chatgpt(result.text);
-        chunks = [];
-      };
-    });
+        mediaRecorder.onstop = async e => {
+          var blob = new Blob(chunks, { 'type' : 'audio/webm' });
+          var file = new File([blob], "audio.webm", { type: "audio/webm;" });
+          var result = await whisper_api(file);
+          console.log(result);
+          messages.send_chatgpt(result.text);
+          chunks = [];
+        };
+      });
+      mediaRecorder.start();    
+}
+
+var mediaRecorder;
 
 document.addEventListener("keydown", e=>
 {
-    if (e.key === " " && mediaRecorder.state !== "recording") mediaRecorder.start();
+    if (e.key === " " && mediaRecorder.state !== "recording") start_recording();
 });
 
 document.addEventListener("keyup", e=>
@@ -79,7 +122,7 @@ document.addEventListener("keyup", e=>
 
 document.querySelector("button").addEventListener("touchstart", e=>
 {
-    if (mediaRecorder.state !== "recording") mediaRecorder.start();
+    if (mediaRecorder.state !== "recording") start_recording();
 });
 
 document.querySelector("button").addEventListener("touchend", e=>
@@ -87,3 +130,4 @@ document.querySelector("button").addEventListener("touchend", e=>
     mediaRecorder.stop();
 });
 
+document.querySelector("input.system_message").addEventListener("change", e => messages.update_system_message(e.target.value));
