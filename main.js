@@ -12,7 +12,8 @@ class Messages{
         this.messages.push({role: "user", content: content});
         console.log(this.messages);
         var result = await chatgpt_api(this.messages);
-        console.log(result);
+        console.log(result.choices[0].message.content);
+        this.messages.push(result.choices[0].message);
     }
 }
 
