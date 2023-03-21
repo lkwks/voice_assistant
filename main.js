@@ -94,6 +94,8 @@ function start_recording()
       .then( stream => {
         var chunks=[];
         mediaRecorder = new MediaRecorder(stream, {type: 'audio/webm'});
+        mediaRecorder.start();    
+  
         mediaRecorder.ondataavailable = e => chunks.push(e.data);
   
         mediaRecorder.onstop = async e => {
@@ -105,7 +107,6 @@ function start_recording()
           chunks = [];
         };
       });
-      mediaRecorder.start();    
 }
 
 var mediaRecorder = null;
