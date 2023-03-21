@@ -8,7 +8,7 @@ class Messages{
         this.messages_token = [0];
         this.system_message = {role: "system", content: ""};
         
-        this.event_source = new EventSource('https://api.openai.com/v1/chat/completions');
+        this.event_source = new EventSource('https://api.openai.com/v1/chat/completions', {headers: {'Authorization': `Bearer ${localStorage.getItem("API_KEY")}`}});
         this.event_source.onmessage = e => {
             const data = JSON.parse(e.data);
             console.log(data);
@@ -92,7 +92,6 @@ function start_recording()
 {
       navigator.mediaDevices.getUserMedia({ audio: true })
       .then( stream => {
-        var chunks=[];
         mediaRecorder = new MediaRecorder(stream, {type: 'audio/webm'});
         mediaRecorder.start();    
   
@@ -105,11 +104,12 @@ function start_recording()
           console.log(result);
           messages.send_chatgpt(result.text);
           chunks = [];
+          mediaRecorder = null;
         };
       });
 }
 
-var mediaRecorder = null;
+var mediaRecorder = null, chunks = [];
 
 document.addEventListener("keydown", e=>
 {
