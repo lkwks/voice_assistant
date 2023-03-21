@@ -108,21 +108,21 @@ function start_recording()
       mediaRecorder.start();    
 }
 
-var mediaRecorder;
+var mediaRecorder = null;
 
 document.addEventListener("keydown", e=>
 {
-    if (e.key === " " && mediaRecorder.state !== "recording") start_recording();
+    if (e.key === " " && mediaRecorder && mediaRecorder.state !== "recording") start_recording();
 });
 
 document.addEventListener("keyup", e=>
 {
-    if (e.key === " ") mediaRecorder.stop();
+    if (e.key === " " && mediaRecorder) mediaRecorder.stop();
 });
 
 document.querySelector("button").addEventListener("touchstart", e=>
 {
-    if (mediaRecorder.state !== "recording") start_recording();
+    if (mediaRecorder && mediaRecorder.state !== "recording") start_recording();
 });
 
 document.querySelector("button").addEventListener("touchend", e=>
