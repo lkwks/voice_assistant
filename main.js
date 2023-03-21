@@ -26,7 +26,7 @@ async function chatgpt_api(messages)
             "Content-Type": "application/json",
             "Authorization": `Bearer ${localStorage.getItem("API_KEY")}`,
         },
-        body: JSON.stringify({ model: "gpt-3.5-turbo", messages: messages, stream: true})
+        body: JSON.stringify({ model: "gpt-3.5-turbo", messages: messages})
     });
     console.log(response);
     return await response.json();
