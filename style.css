@@ -1,4 +1,3 @@
-
 body, main, div{
     display: flex;
     justify-content: center;
@@ -30,19 +29,19 @@ main{
 }
 
 button{
-    width: 50%;
-    height: 50%;
+    width: 30%;
+    height: 30%;
     user-select: none;
 }
 
 div.answer{
-    margin: 50px;
+    margin: 10px;
     width: 200px;
-    height: 200px;
+    height: 50px;
 }
 
 input.system_message{
-    margin-top:100px;
+    margin-top:10px;
     width: 70%;
 }
 
