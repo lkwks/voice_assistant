@@ -70,10 +70,7 @@ async function chatgpt_api(messages)
 
           buffer += new TextDecoder('utf-8').decode(result.value || new Uint8Array());
 
-          const messages = buffer.split('\n\n');
-          buffer = messages.pop();
-
-          for (const message of messages) {
+          buffer.split('\n\n').forEach(message => {
              if (message.includes("data: ") && message.includes("[DONE]") === false)
              {
                  const val=JSON.parse(message.replace("data: ", ""));
@@ -82,12 +79,11 @@ async function chatgpt_api(messages)
                  else
                      console.log(val);
              }
-          }
-
+          });
+          
           return reader.read().then(processResult);
         });
    }).catch(error => {
-       // 오류 처리합니다.
        console.error(error);
    });
 
