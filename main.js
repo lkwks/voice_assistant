@@ -74,7 +74,7 @@ async function chatgpt_api(messages)
           buffer = messages.pop();
 
           for (const message of messages) {
-             console.log(JSON.parse(message));
+             console.log(JSON.parse(message.replace("data: ", ""));
           }
 
           return reader.read().then(processResult);
