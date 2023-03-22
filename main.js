@@ -7,12 +7,6 @@ class Messages{
         this.messages = [{role: "user", content: ""}];
         this.messages_token = [0];
         this.system_message = {role: "system", content: ""};
-        
-        this.event_source = new EventSource('https://api.openai.com/v1/chat/completions', {headers: {'Authorization': `Bearer ${localStorage.getItem("API_KEY")}`}});
-        this.event_source.onmessage = e => {
-            const data = JSON.parse(e.data);
-            console.log(data);
-        };
     }
     
     update_system_message(content)
@@ -59,8 +53,8 @@ class Messages{
 var messages = new Messages();
 
 async function chatgpt_api(messages)
-{
-    const response = await fetch("https://api.openai.com/v1/chat/completions", {
+{   
+    const response = new EventSource("https://api.openai.com/v1/chat/completions", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -68,6 +62,12 @@ async function chatgpt_api(messages)
         },
         body: JSON.stringify({ model: "gpt-3.5-turbo", messages: messages, stream: true})
     });
+    
+    response.onmessage = e => {
+        const data = JSON.parse(e.data);
+        console.log(data);
+    };
+    
     console.log(response);
 }
 
