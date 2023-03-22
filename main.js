@@ -54,21 +54,42 @@ var messages = new Messages();
 
 async function chatgpt_api(messages)
 {   
-    const response = new EventSource("https://api.openai.com/v1/chat/completions", {
+    fetch("https://api.openai.com/v1/chat/completions", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
             "Authorization": `Bearer ${localStorage.getItem("API_KEY")}`,
         },
         body: JSON.stringify({ model: "gpt-3.5-turbo", messages: messages, stream: true})
-    });
+    }).then(response => {
+  const reader = response.body.getReader();
+  let buffer = '';
+
+  reader.read().then(function processResult(result) {
+    if (signal.aborted) {
+      return;
+    }
+
+    buffer += new TextDecoder('utf-8').decode(result.value || new Uint8Array());
+
+    const messages = buffer.split('\n\n');
+    buffer = messages.pop();
+
+    for (const message of messages) {
+      // 각 메시지를 처리합니다.
+      console.log(message);
+    }
+
+    return reader.read().then(processResult);
+  });
+}).catch(error => {
+  // 오류 처리합니다.
+  console.error(error);
+});
+
+// 페이지가 언로드되거나 중지되면 fetch 요청을 취소합니다.
+window.addEventListener('unload', () => controller.abort());
     
-    response.onmessage = e => {
-        const data = JSON.parse(e.data);
-        console.log(data);
-    };
-    
-    console.log(response);
 }
 
 async function whisper_api(file)
