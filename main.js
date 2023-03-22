@@ -20,6 +20,7 @@ class Messages{
         this.messages_token.push(content.split(" ").length * 5);
         this.flush_if_too_many_tokens();
         var answer = await chatgpt_api([this.system_message, ...this.messages]);
+        console.log(answer);
         this.messages.push({role: "assistant", content: answer});
     }
 
@@ -80,6 +81,7 @@ class AnswerStream{
 var messages = new Messages();
 var answer_stream = new AnswerStream();
 
+setInterval(()=>{document.querySelector("div.answer").innerHTML = answer_stream.now_answer;}, 100);
 // 중간중간에 answer_stream.now_answer의 문장이 끝났는지를 정규식으로 확인한 후 끝났다면 구글 TTS API에 전송하는 setInterval 코드를 추가할 수 있을 듯함.
 
 async function chatgpt_api(messages)
@@ -96,7 +98,7 @@ async function chatgpt_api(messages)
         const reader = response.body.getReader();
         let buffer = '';
 
-        return await reader.read().then(function processResult(result) {
+        return await reader.read().then(async function processResult(result) {
 
           buffer += new TextDecoder('utf-8').decode(result.value || new Uint8Array());
             
