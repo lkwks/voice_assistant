@@ -74,11 +74,13 @@ async function chatgpt_api(messages)
           buffer = messages.pop();
 
           for (const message of messages) {
-             if (message.includes("data: "))
+             if (message.includes("data: ") && message.includes("[DONE]") === false)
              {
-                 const val=JSON.parse(message.replace("data: ", "")).choices[0].delta;
-                 if (val.content)
-                     document.querySelector("div.answer").innerHTML += val.content;
+                 const val=JSON.parse(message.replace("data: ", ""));
+                 if (val.choices[0].delta.content)
+                     document.querySelector("div.answer").innerHTML += val.choices[0].delta.content;
+                 else
+                     console.log(val);
              }
           }
 
