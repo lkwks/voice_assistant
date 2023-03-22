@@ -81,7 +81,7 @@ async function chatgpt_api(messages)
              }
           });
           
-          return reader.read().then(processResult);
+          reader.read().then(processResult);
         });
    }).catch(error => {
        console.error(error);
