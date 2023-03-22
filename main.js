@@ -62,27 +62,27 @@ async function chatgpt_api(messages)
         },
         body: JSON.stringify({ model: "gpt-3.5-turbo", messages: messages, stream: true})
     }).then(response => {
-  const reader = response.body.getReader();
-  let buffer = '';
+  
+        const reader = response.body.getReader();
+        let buffer = '';
 
-  reader.read().then(function processResult(result) {
+        reader.read().then(function processResult(result) {
 
-    buffer += new TextDecoder('utf-8').decode(result.value || new Uint8Array());
+          buffer += new TextDecoder('utf-8').decode(result.value || new Uint8Array());
 
-    const messages = buffer.split('\n\n');
-    buffer = messages.pop();
+          const messages = buffer.split('\n\n');
+          buffer = messages.pop();
 
-    for (const message of messages) {
-      // 각 메시지를 처리합니다.
-      console.log(message);
-    }
+          for (const message of messages) {
+             console.log(JSON.parse(message));
+          }
 
-    return reader.read().then(processResult);
-  });
-}).catch(error => {
-  // 오류 처리합니다.
-  console.error(error);
-});
+          return reader.read().then(processResult);
+        });
+   }).catch(error => {
+       // 오류 처리합니다.
+       console.error(error);
+   });
 
 }
 
