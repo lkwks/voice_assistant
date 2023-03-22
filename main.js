@@ -72,7 +72,8 @@ async function chatgpt_api(messages)
             
           var messages = buffer.split('\n\n')
           buffer = messages.pop();
-          console.log(buffer);
+          console.log(buffer, messages.length);
+          if (messages.length === 0) return;
 
           messages.forEach(message => {
              if (message.includes("data: ") && message.includes("[DONE]") === false)
