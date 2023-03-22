@@ -66,9 +66,6 @@ async function chatgpt_api(messages)
   let buffer = '';
 
   reader.read().then(function processResult(result) {
-    if (signal.aborted) {
-      return;
-    }
 
     buffer += new TextDecoder('utf-8').decode(result.value || new Uint8Array());
 
@@ -87,9 +84,6 @@ async function chatgpt_api(messages)
   console.error(error);
 });
 
-// 페이지가 언로드되거나 중지되면 fetch 요청을 취소합니다.
-window.addEventListener('unload', () => controller.abort());
-    
 }
 
 async function whisper_api(file)
