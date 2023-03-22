@@ -69,11 +69,15 @@ async function chatgpt_api(messages)
         reader.read().then(function processResult(result) {
 
           buffer += new TextDecoder('utf-8').decode(result.value || new Uint8Array());
+            
+          var messages = buffer.split('\n\n')
+          buffer = messages.pop();
+          console.log(buffer);
 
-          buffer.split('\n\n').forEach(message => {
+          messages.forEach(message => {
              if (message.includes("data: ") && message.includes("[DONE]") === false)
              {
-                 const val=JSON.parse(message.replace("data: ", ""));
+                 const val = JSON.parse(message.replace("data: ", ""));
                  if (val.choices[0].delta.content)
                      document.querySelector("div.answer").innerHTML += val.choices[0].delta.content;
                  else
@@ -81,7 +85,7 @@ async function chatgpt_api(messages)
              }
           });
           
-          return reader.read().then(processResult);
+          reader.read().then(processResult);
         });
    }).catch(error => {
        console.error(error);
