@@ -143,7 +143,7 @@ async function whisper_api(file)
 
 async function start_recording()
 {
-    const stream = navigator.mediaDevices.getUserMedia({ audio: true });
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       
     mediaRecorder = new MediaRecorder(stream, {type: 'audio/webm'});
   
