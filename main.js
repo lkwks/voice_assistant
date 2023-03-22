@@ -177,22 +177,22 @@ document.addEventListener("keyup", e=>
 
 document.querySelector("button").addEventListener("touchstart", e=>
 {
-    if (mediaRecorder && mediaRecorder.state !== "recording") start_recording();
+    if (mediaRecorder === null || mediaRecorder && mediaRecorder.state !== "recording") start_recording();
 });
 
 document.querySelector("button").addEventListener("touchend", e=>
 {
-    mediaRecorder.stop();
+    if (mediaRecorder) mediaRecorder.stop();
 });
 
 document.querySelector("button").addEventListener("mousedown", e=>
 {
-    if (mediaRecorder && mediaRecorder.state !== "recording") start_recording();
+    if (mediaRecorder === null || mediaRecorder && mediaRecorder.state !== "recording") start_recording();
 });
 
 document.querySelector("button").addEventListener("mouseup", e=>
 {
-    mediaRecorder.stop();
+    if (mediaRecorder) mediaRecorder.stop();
 });
 
 document.querySelector("input.system_message").addEventListener("change", e => messages.update_system_message(e.target.value));
