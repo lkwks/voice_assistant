@@ -187,6 +187,7 @@ class AudioManager{
     
     play()
     {
+        console.log(this.audio.paused);
         if (this.play_q.length > 0 && this.audio.paused === false)
         {
             console.log(this.play_q);
