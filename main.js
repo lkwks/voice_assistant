@@ -22,7 +22,6 @@ class Messages{
         this.messages_token.push(content.split(" ").length * 5);
         this.flush_if_too_many_tokens();
         var answer = await chatgpt_api([this.system_message, ...this.messages]);
-        console.log(answer, sentences(answer));
         this.messages.push({role: "assistant", content: answer});
     }
 
@@ -72,6 +71,12 @@ class AnswerStream{
     add_answer(answer)
     {
         this.now_answer += answer;
+        const sentences_arr = sentences(this.now_answer);
+        if (sentences_arr.length > 1)
+        {
+            console.log(sentences_arr[0]);
+            this.now_answer = sentences_arr[1];
+        }
     }
     
     end()
@@ -88,6 +93,7 @@ setInterval(()=>{document.querySelector("div.answer").innerHTML = answer_stream.
 
 async function chatgpt_api(messages)
 {   
+    console.log(messages);
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
         method: "POST",
         headers: {
@@ -156,7 +162,7 @@ async function start_recording()
           var blob = new Blob(chunks, { 'type' : 'audio/webm' });
           var file = new File([blob], "audio.webm", { type: "audio/webm;" });
           var result = await whisper_api(file);
-          console.log(result);
+          console.log(result); // 이건 항상 화면에 띄워줘야 안 답답하지.
           messages.send_chatgpt(result.text);
           chunks = [];
           mediaRecorder = null;
