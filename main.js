@@ -263,3 +263,14 @@ document.querySelector("button").addEventListener("mouseup", e=>
 });
 
 document.querySelector("input.system_message").addEventListener("change", e => messages.update_system_message(e.target.value));
+
+document.body.addEventListener("click", e => {
+    if (e.target.nodeName === "INPUT")
+    {
+        if (e.target.parentNode.classList.contains("TTS_API_KEY"))
+        {
+            localStorage.setItem("TTS_API_KEY", e.target.value);
+            document.querySelector("div.TTS_API_KEY").classList.add("hide");
+        }
+    }
+});
