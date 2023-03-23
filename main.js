@@ -1,3 +1,5 @@
+import {sentences} from './sbd.min.js';
+
 let API_KEY = localStorage.getItem("API_KEY");
 if (API_KEY && API_KEY !== "null") document.querySelector("div.API_KEY").classList.add("hide");
 
@@ -94,6 +96,7 @@ async function chatgpt_api(messages)
         },
         body: JSON.stringify({ model: "gpt-3.5-turbo", messages: messages, stream: true})
     });
+    console.log(response);
   
         const reader = response.body.getReader();
         let buffer = '';
