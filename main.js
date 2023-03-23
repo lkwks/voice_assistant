@@ -189,6 +189,7 @@ class AudioManager{
     {
         if (this.play_q.length > 0 && this.audio.paused === false)
         {
+            console.log(this.play_q);
             this.audio.src = this.play_q.shift();
             this.audio.play();
         }
@@ -221,7 +222,9 @@ async function get_tts(text)
           body: JSON.stringify({ input: { text:text }, voice: {languageCode: langname.substring(0,5), name: langname}, audioConfig: { audioEncoding: 'LINEAR16'}}),
         };
   
+    console.log(text);
       const response = await fetch(`https://texttospeech.googleapis.com/v1/text:synthesize?key=${localStorage.getItem("TTS_API_KEY")}`, params);
+    console.log(response);
   
       const blob = new Blob([Uint8Array.from(atob((await response.json()).audioContent), c => c.charCodeAt(0))], { type: 'audio/mp3' });
       return URL.createObjectURL(blob);
