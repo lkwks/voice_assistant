@@ -3,7 +3,7 @@ import {sentences} from './lib/tokenizer.js';
 let API_KEY = localStorage.getItem("API_KEY");
 if (API_KEY && API_KEY !== "null") document.querySelector("div.API_KEY").classList.add("hide");
 
-let API_KEY = localStorage.getItem("TTS_API_KEY");
+let TTS_API_KEY = localStorage.getItem("TTS_API_KEY");
 if (TTS_API_KEY && TTS_API_KEY !== "null") document.querySelector("div.TTS_API_KEY").classList.add("hide");
 
 class Messages{
