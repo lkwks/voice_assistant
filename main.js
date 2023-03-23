@@ -72,13 +72,13 @@ class AnswerStream{
         }
     }
     
-    add_answer(answer)
+    async add_answer(answer)
     {
         this.now_answer += answer;
         const sentences_arr = sentences(this.now_answer);
         if (sentences_arr.length > 1)
         {
-            audio_manager.push_text(sentences_arr[0]);
+            await audio_manager.push_text(sentences_arr[0]);
             this.now_answer = sentences_arr[1];
         }
     }
@@ -123,13 +123,13 @@ async function chatgpt_api(messages)
               return answer_stream.now_answer;
           }
 
-          messages.forEach(message => {
+          messages.forEach(async message => {
              if (message.includes("data: ") && message.includes("[DONE]") === false)
              {
                  answer_stream.start();
                  const val = JSON.parse(message.replace("data: ", ""));
                  if (val.choices[0].delta.content)
-                     answer_stream.add_answer(val.choices[0].delta.content);
+                     await answer_stream.add_answer(val.choices[0].delta.content);
              }
           });
           
@@ -194,7 +194,7 @@ class AudioManager{
         }
     }
     
-    push_text(text)
+    async push_text(text)
     {
         this.play_q.push(await get_tts(text));
         this.play();
