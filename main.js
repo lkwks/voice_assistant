@@ -126,7 +126,7 @@ async function chatgpt_api(messages)
               return answer_stream.now_answer;
           }
 
-          messages.forEach(async message => {
+          for (var message of messages)
              if (message.includes("data: ") && message.includes("[DONE]") === false)
              {
                  answer_stream.start();
@@ -134,7 +134,6 @@ async function chatgpt_api(messages)
                  if (val.choices[0].delta.content)
                      await answer_stream.add_answer(val.choices[0].delta.content);
              }
-          });
           
           return await reader.read().then(processResult);
         });
