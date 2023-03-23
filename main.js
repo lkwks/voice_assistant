@@ -3,6 +3,9 @@ import {sentences} from './lib/tokenizer.js';
 let API_KEY = localStorage.getItem("API_KEY");
 if (API_KEY && API_KEY !== "null") document.querySelector("div.API_KEY").classList.add("hide");
 
+let API_KEY = localStorage.getItem("TTS_API_KEY");
+if (TTS_API_KEY && TTS_API_KEY !== "null") document.querySelector("div.TTS_API_KEY").classList.add("hide");
+
 class Messages{
     constructor()
     {
@@ -22,7 +25,7 @@ class Messages{
         this.messages_token.push(content.split(" ").length * 5);
         this.flush_if_too_many_tokens();
         var answer = await chatgpt_api([this.system_message, ...this.messages]);
-        console.log(answer);
+        audio_manager.push_text(answer);
         this.messages.push({role: "assistant", content: answer});
     }
 
@@ -75,7 +78,7 @@ class AnswerStream{
         const sentences_arr = sentences(this.now_answer);
         if (sentences_arr.length > 1)
         {
-            console.log(sentences_arr[0]);
+            audio_manager.push_text(sentences_arr[0]);
             this.now_answer = sentences_arr[1];
         }
     }
@@ -140,6 +143,7 @@ async function whisper_api(file)
     var formData = new FormData();
     formData.append('model', 'whisper-1');
     formData.append('file', file);
+    formData.append('language', 'en');
 
     const response = await fetch("https://api.openai.com/v1/audio/transcriptions", {
         method: "POST",
@@ -172,6 +176,59 @@ async function start_recording()
 
     mediaRecorder.start();    
 }
+
+class AudioManager{
+    constructor()
+    {
+        this.play_q = [];
+        this.audio = new Audio();
+        this.audio.addEventListener("ended", ()=>this.play());
+    }
+    
+    play()
+    {
+        if (this.play_q.length > 0 && this.audio.paused === false)
+        {
+            this.audio.src = this.play_q.shift();
+            this.audio.play();
+        }
+    }
+    
+    push_text(text)
+    {
+        this.play_q.push(await get_tts(text));
+        this.play();
+    }
+}
+
+var audio_manager = new AudioManager();
+
+function get_langname()
+{
+    const rand_num = Math.floor(Math.random()*10);
+    const name_char = 'CEFGHACFAC';
+    const lang_code = (rand_num < 5) ? 'US' : ( (rand_num < 8) ? 'GB' : 'AU' );      
+    return `en-${lang_code}-Wavenet-${name_char[rand_num]}`;
+}
+
+
+async function get_tts(text)
+{
+      var langname = get_langname();
+      const params = {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({ input: { text:text }, voice: {languageCode: langname.substring(0,5), name: langname}, audioConfig: { audioEncoding: 'LINEAR16'}}),
+        };
+  
+      const response = await fetch(`https://texttospeech.googleapis.com/v1/text:synthesize?key=${localStorage.getItem("TTS_API_KEY")}`, params);
+  
+      const blob = new Blob([Uint8Array.from(atob((await response.json()).audioContent), c => c.charCodeAt(0))], { type: 'audio/mp3' });
+      return URL.createObjectURL(blob);
+}
+
+
+
 
 var mediaRecorder = null, chunks = [];
 
