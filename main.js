@@ -74,15 +74,12 @@ class AnswerStream{
     
     async add_answer(answer)
     {
-        console.log(this.now_answer, answer);
         this.now_answer += answer;
         const sentences_arr = sentences(this.now_answer);
         if (sentences_arr.length > 1)
         {
-            console.log(sentences_arr);
             await audio_manager.push_text(sentences_arr[0]);
             this.now_answer = sentences_arr[1];
-            console.log(this.now_answer);
         }
     }
     
@@ -100,7 +97,6 @@ setInterval(()=>{document.querySelector("div.answer").innerHTML = answer_stream.
 
 async function chatgpt_api(messages)
 {   
-    console.log(messages);
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
         method: "POST",
         headers: {
