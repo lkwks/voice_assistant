@@ -188,7 +188,6 @@ class AudioManager{
     {
         if (this.play_q.length > 0 && this.audio.paused)
         {
-            console.log(this.play_q);
             this.audio.src = this.play_q.shift();
             this.audio.play();
         }
