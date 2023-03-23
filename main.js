@@ -22,6 +22,7 @@ class Messages{
         this.messages_token.push(content.split(" ").length * 5);
         this.flush_if_too_many_tokens();
         var answer = await chatgpt_api([this.system_message, ...this.messages]);
+        console.log(answer);
         this.messages.push({role: "assistant", content: answer});
     }
 
