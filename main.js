@@ -74,6 +74,7 @@ class AnswerStream{
     
     async add_answer(answer)
     {
+        console.log(this.now_answer, answer);
         this.now_answer += answer;
         const sentences_arr = sentences(this.now_answer);
         if (sentences_arr.length > 1)
@@ -81,6 +82,7 @@ class AnswerStream{
             console.log(sentences_arr);
             await audio_manager.push_text(sentences_arr[0]);
             this.now_answer = sentences_arr[1];
+            console.log(this.now_answer);
         }
     }
     
@@ -184,6 +186,7 @@ class AudioManager{
         this.play_q = [];
         this.audio = new Audio();
         this.audio.addEventListener("ended", ()=>this.play());
+        this.langname = get_langname();
     }
     
     play()
@@ -216,7 +219,7 @@ function get_langname()
 
 async function get_tts(text)
 {
-      var langname = get_langname();
+      var langname = audio_manager.langname;
       const params = {
           method: 'POST',
           headers: {'Content-Type': 'application/json'},
