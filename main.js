@@ -142,6 +142,7 @@ async function whisper_api(file)
     formData.append('file', file);
     formData.append('language', 'en');
 
+    console.log(file);
     const response = await fetch("https://api.openai.com/v1/audio/transcriptions", {
         method: "POST",
         headers: {
@@ -149,6 +150,7 @@ async function whisper_api(file)
         },
         body: formData
     });
+    console.log(response);
     return await response.json();
 }
 
