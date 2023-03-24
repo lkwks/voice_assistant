@@ -12,8 +12,8 @@ if (!SYSTEM_MESSAGE || SYSTEM_MESSAGE === "null") localStorage.setItem("SYSTEM_M
 class Messages{
     constructor()
     {
-        this.messages = [];
-        this.messages_token = [];
+        this.messages = [{role:"user", content:""}];
+        this.messages_token = [0];
         document.querySelector("div.now_system_message").innerHTML = `System message: "${localStorage.getItem("SYSTEM_MESSAGE")}"`;
     }
     
