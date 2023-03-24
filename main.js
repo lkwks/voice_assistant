@@ -15,7 +15,7 @@ class Messages{
         this.messages = [];
         this.messages_token = [];
         this.system_message = [{role:"user", content:""}, {role: "user", content: localStorage.getItem("SYSTEM_MESSAGE")}, {role:"assistant", content:"Yes, I will follow your words."}];
-        document.querySelector("div.now_system_message").innerHTML = `System message: "${this.system_message.content}"`;
+        document.querySelector("div.now_system_message").innerHTML = `System message: "${this.system_message[1].content}"`;
     }
     
     update_system_message(content)
