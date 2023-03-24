@@ -132,6 +132,8 @@ async function chatgpt_api(messages)
           return await reader.read().then(processResult);
         });
     });
+    console.log(response);
+    return response;
 }
 
 async function whisper_api(file)
