@@ -154,6 +154,7 @@ async function whisper_api(file)
 
 async function start_recording()
 {
+    document.querySelector("div.answer").innerHTML = "Recording...");
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
     
     audio_manager.audio.pause();
