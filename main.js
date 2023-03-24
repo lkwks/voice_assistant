@@ -263,7 +263,7 @@ document.querySelector("button").addEventListener("mouseup", e=>
 document.querySelector("input.system_message").addEventListener("change", e => messages.update_system_message(e.target.value));
 
 document.body.addEventListener("click", e => {
-    if (e.target.nodeName === "INPUT")
+    if (e.target.nodeName === "INPUT" && e.target.type === "SUBMIT")
     {
         if (e.target.parentNode.classList.contains("TTS_API_KEY"))
         {
