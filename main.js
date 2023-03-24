@@ -92,9 +92,6 @@ class AnswerStream{
 var messages = new Messages();
 var answer_stream = new AnswerStream();
 
-setInterval(()=>{ = answer_stream.now_answer;}, 100);
-// 중간중간에 answer_stream.now_answer의 문장이 끝났는지를 정규식으로 확인한 후 끝났다면 구글 TTS API에 전송하는 setInterval 코드를 추가할 수 있을 듯함.
-
 async function chatgpt_api(messages)
 {   
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
