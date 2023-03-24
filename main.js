@@ -24,9 +24,8 @@ class Messages{
         this.messages.push({role: "user", content: content});
         this.messages_token.push(content.split(" ").length * 5);
         this.flush_if_too_many_tokens();
-        var answer = await chatgpt_api([this.system_message, ...this.messages]);
-        audio_manager.push_text(answer);
-        this.messages.push({role: "assistant", content: answer});
+        await chatgpt_api([this.system_message, ...this.messages]);
+        this.messages.push({role: "assistant", content: answer_stream.answer_set});
     }
 
     flush_if_too_many_tokens()
@@ -61,12 +60,14 @@ class AnswerStream{
     {
         this.now_streaming = false;
         this.now_answer = "";
+        this.answer_set = "";
     }
     
     start()
     {
         if (this.now_streaming === false)
         {
+            this.answer_set = "";
             this.now_answer = "";
             this.now_streaming = true;
         }
@@ -74,6 +75,7 @@ class AnswerStream{
     
     async add_answer(answer)
     {
+        this.answer_set += answer;
         this.now_answer += answer;
         const sentences_arr = sentences(this.now_answer);
         if (sentences_arr.length > 1)
@@ -93,8 +95,7 @@ var messages = new Messages();
 var answer_stream = new AnswerStream();
 
 async function chatgpt_api(messages)
-{   
-    console.log(messages);
+{
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
         method: "POST",
         headers: {
@@ -130,12 +131,11 @@ async function chatgpt_api(messages)
           return await reader.read().then(processResult);
         });
     });
-    return response;
+    audio_manager.push_text(response);
 }
 
 async function whisper_api(file)
 {
-    console.log(file);
     var formData = new FormData();
     formData.append('model', 'whisper-1');
     formData.append('file', file);
