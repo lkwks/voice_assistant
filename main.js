@@ -164,7 +164,10 @@ async function start_recording()
           var blob = new Blob(chunks, { 'type' : 'audio/webm' });
           var file = new File([blob], "audio.webm", { type: "audio/webm;" });
           var result = await whisper_api(file);
-          document.querySelector("div.answer").innerHTML = result; // 이건 항상 화면에 띄워줘야 안 답답하지.
+          document.querySelector("div.answer").innerHTML = result.text; // 이건 항상 화면에 띄워줘야 안 답답하지.
+
+//여기다가 리턴 문자열 있으면 오디오 비우고 새 오디오 시작. 없으면 중단했던 오디오 재개.
+
           messages.send_chatgpt(result.text);
           chunks = [];
           mediaRecorder = null;
@@ -225,7 +228,10 @@ async function get_tts(text)
       return URL.createObjectURL(blob);
 }
 
-
+function stop_recording()
+{
+    mediaRecorder.stop();
+}
 
 
 var mediaRecorder = null, chunks = [];
@@ -237,7 +243,7 @@ document.addEventListener("keydown", e=>
 
 document.addEventListener("keyup", e=>
 {
-    if (e.key === " " && mediaRecorder) mediaRecorder.stop();
+    if (e.key === " " && mediaRecorder) stop_recording();
 });
 
 document.querySelector("button").addEventListener("touchstart", e=>
@@ -247,7 +253,7 @@ document.querySelector("button").addEventListener("touchstart", e=>
 
 document.querySelector("button").addEventListener("touchend", e=>
 {
-    if (mediaRecorder) mediaRecorder.stop();
+    if (mediaRecorder) stop_recording();
 });
 
 document.querySelector("button").addEventListener("mousedown", e=>
@@ -257,7 +263,7 @@ document.querySelector("button").addEventListener("mousedown", e=>
 
 document.querySelector("button").addEventListener("mouseup", e=>
 {
-    if (mediaRecorder) mediaRecorder.stop();
+    if (mediaRecorder) stop_recording();
 });
 
 document.querySelector("input.system_message").addEventListener("change", e => messages.update_system_message(e.target.value));
