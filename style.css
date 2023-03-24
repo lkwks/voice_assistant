@@ -42,6 +42,7 @@ div.answer{
 
 div.system_message{
     width: 350px;
+    flex-wrap: column;
 }
 
 div.now_system_message{
