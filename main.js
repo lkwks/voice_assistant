@@ -12,9 +12,9 @@ if (!SYSTEM_MESSAGE || SYSTEM_MESSAGE === "null") localStorage.setItem("SYSTEM_M
 class Messages{
     constructor()
     {
-        this.messages = [{role: "user", content: ""}];
-        this.messages_token = [0];
-        this.system_message = {role: "system", content: localStorage.getItem("SYSTEM_MESSAGE")};
+        this.messages = [];
+        this.messages_token = [];
+        this.system_message = [{role:"user", content:""}, {role: "user", content: localStorage.getItem("SYSTEM_MESSAGE")}, {role:"assistant", content:"Yes, I will follow your words."}];
         document.querySelector("div.now_system_message").innerHTML = `System message: "${this.system_message.content}"`;
     }
     
@@ -23,7 +23,7 @@ class Messages{
         document.querySelector("textarea").innerHTML = "";
         localStorage.setItem("SYSTEM_MESSAGE", content);
         document.querySelector("div.now_system_message").innerHTML = `System message: "${content}"`;
-        this.system_message.content = content;
+        this.system_message[1].content = content;
     }
     
     async send_chatgpt(content)
@@ -31,7 +31,7 @@ class Messages{
         this.messages.push({role: "user", content: content});
         this.messages_token.push(content.split(" ").length * 5);
         this.flush_if_too_many_tokens();
-        await chatgpt_api([this.system_message, ...this.messages]);
+        await chatgpt_api([...this.system_message, ...this.messages]);
         this.messages.push({role: "assistant", content: answer_stream.answer_set});
     }
 
