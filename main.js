@@ -11,7 +11,7 @@ class Messages{
     {
         this.messages = [{role: "user", content: ""}];
         this.messages_token = [0];
-        this.system_message = {role: "system", content: ""};
+        this.system_message = {role: "system", content: "Don't write your answer too long. Write your answer only in 3 sentences."};
     }
     
     update_system_message(content)
@@ -25,7 +25,6 @@ class Messages{
         this.messages_token.push(content.split(" ").length * 5);
         this.flush_if_too_many_tokens();
         var answer = await chatgpt_api([this.system_message, ...this.messages]);
-        console.log(answer);
         audio_manager.push_text(answer);
         this.messages.push({role: "assistant", content: answer});
     }
@@ -79,7 +78,6 @@ class AnswerStream{
         const sentences_arr = sentences(this.now_answer);
         if (sentences_arr.length > 1)
         {
-            console.log(sentences_arr[0]);
             await audio_manager.push_text(sentences_arr[0]);
             this.now_answer = sentences_arr[1];
         }
@@ -132,7 +130,6 @@ async function chatgpt_api(messages)
           return await reader.read().then(processResult);
         });
     });
-    console.log(response);
     return response;
 }
 
@@ -157,6 +154,8 @@ async function whisper_api(file)
 async function start_recording()
 {
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    
+    audio_manager.audio.pause();
       
     mediaRecorder = new MediaRecorder(stream, {type: 'audio/webm'});
   
@@ -166,9 +165,9 @@ async function start_recording()
           var blob = new Blob(chunks, { 'type' : 'audio/webm' });
           var file = new File([blob], "audio.webm", { type: "audio/webm;" });
           var result = await whisper_api(file);
-          document.querySelector("div.answer").innerHTML = result.text; // 이건 항상 화면에 띄워줘야 안 답답하지.
+          document.querySelector("div.answer").innerHTML = `You: "${result.text}"`; 
 
-//여기다가 리턴 문자열 있으면 오디오 비우고 새 오디오 시작. 없으면 중단했던 오디오 재개.
+          if (result.text !== "") audio_manager.play_q = [];
 
           messages.send_chatgpt(result.text);
           chunks = [];
@@ -199,7 +198,6 @@ class AudioManager{
     
     async push_text(text)
     {
-        console.log(text);
         this.play_q.push(await get_tts(text));
         this.play();
     }
@@ -228,7 +226,6 @@ async function get_tts(text)
   
       const response = await fetch(`https://texttospeech.googleapis.com/v1/text:synthesize?key=${localStorage.getItem("TTS_API_KEY")}`, params);
   
-      console.log(response);
       const blob = new Blob([Uint8Array.from(atob((await response.json()).audioContent), c => c.charCodeAt(0))], { type: 'audio/mp3' });
       return URL.createObjectURL(blob);
 }
@@ -280,6 +277,11 @@ document.body.addEventListener("click", e => {
         {
             localStorage.setItem("TTS_API_KEY", e.target.value);
             document.querySelector("div.TTS_API_KEY").classList.add("hide");
+        }
+        if (e.target.parentNode.classList.contains("API_KEY"))
+        {
+            localStorage.setItem("API_KEY", e.target.value);
+            document.querySelector("div.API_KEY").classList.add("hide");
         }
     }
 });
