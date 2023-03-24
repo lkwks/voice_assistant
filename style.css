@@ -42,24 +42,24 @@ div.answer{
 
 div.system_message{
     width: 350px;
-    flex-wrap: column;
+    flex-direction: column;
 }
 
 div.now_system_message{
-    margin: 20px;
+    margin: 10px;
 }
 
 div.system_message > button{
-    height: 20px;
-}
-
-input.system_message{
-    margin-top:10px;
-    width: 70%;
+    height: 40px;
 }
 
 div.API_KEY {
     margin-top: 100px;
+}
+
+textarea{
+    width: 80%;
+    height: 80px;
 }
 
 .hide{
