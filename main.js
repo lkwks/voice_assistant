@@ -157,6 +157,7 @@ async function whisper_api(file)
         body: formData
     });
     console.log(response);
+    if (response.status === 400) return "";
     return await response.json();
 }
 
@@ -180,11 +181,14 @@ async function start_recording()
         
           document.querySelector("div.answer").innerHTML = `Generating...`; 
           var result = await whisper_api(file);
-          document.querySelector("div.answer").innerHTML = `You: "${result.text}"`; 
+          if (result.text)
+          {
+            document.querySelector("div.answer").innerHTML = `You: "${result.text}"`; 
 
-          if (result.text !== "") audio_manager.play_q = [];
+            if (result.text !== "") audio_manager.play_q = [];
 
-          messages.send_chatgpt(result.text);
+            messages.send_chatgpt(result.text);
+          }
     };
 
     mediaRecorder.start();    
