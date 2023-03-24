@@ -166,6 +166,8 @@ async function start_recording()
     mediaRecorder.onstop = async e => {
           var blob = new Blob(chunks, { 'type' : 'audio/webm' });
           var file = new File([blob], "audio.webm", { type: "audio/webm;" });
+        
+          document.querySelector("div.answer").innerHTML = `Generating...`; 
           var result = await whisper_api(file);
           document.querySelector("div.answer").innerHTML = `You: "${result.text}"`; 
 
