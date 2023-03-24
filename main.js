@@ -116,6 +116,7 @@ async function chatgpt_api(messages)
         let buffer = '';
 
         return await reader.read().then(async function processResult(result) {
+            console.log(answer_stream.signal);
           if (answer_stream.signal) return "";
           buffer += new TextDecoder('utf-8').decode(result.value || new Uint8Array());
             
@@ -189,6 +190,7 @@ async function start_recording()
 
             if (result.text !== "") audio_manager.play_q = [];
 
+            answer_stream.signal = false;
             messages.send_chatgpt(result.text);
           }
           else
