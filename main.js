@@ -92,7 +92,7 @@ class AnswerStream{
 var messages = new Messages();
 var answer_stream = new AnswerStream();
 
-setInterval(()=>{document.querySelector("div.answer").innerHTML = answer_stream.now_answer;}, 100);
+setInterval(()=>{ = answer_stream.now_answer;}, 100);
 // 중간중간에 answer_stream.now_answer의 문장이 끝났는지를 정규식으로 확인한 후 끝났다면 구글 TTS API에 전송하는 setInterval 코드를 추가할 수 있을 듯함.
 
 async function chatgpt_api(messages)
@@ -104,9 +104,7 @@ async function chatgpt_api(messages)
             "Authorization": `Bearer ${localStorage.getItem("API_KEY")}`,
         },
         body: JSON.stringify({ model: "gpt-3.5-turbo", messages: messages, stream: true})
-    });
-    console.log(response);
-  
+    }).then(async response => {
         const reader = response.body.getReader();
         let buffer = '';
 
@@ -133,6 +131,7 @@ async function chatgpt_api(messages)
           
           return await reader.read().then(processResult);
         });
+    });
 }
 
 async function whisper_api(file)
@@ -165,7 +164,7 @@ async function start_recording()
           var blob = new Blob(chunks, { 'type' : 'audio/webm' });
           var file = new File([blob], "audio.webm", { type: "audio/webm;" });
           var result = await whisper_api(file);
-          console.log(result); // 이건 항상 화면에 띄워줘야 안 답답하지.
+          document.querySelector("div.answer").innerHTML = result; // 이건 항상 화면에 띄워줘야 안 답답하지.
           messages.send_chatgpt(result.text);
           chunks = [];
           mediaRecorder = null;
