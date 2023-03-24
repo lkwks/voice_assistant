@@ -12,7 +12,7 @@ class Messages{
         this.messages = [{role: "user", content: ""}];
         this.messages_token = [0];
         this.system_message = {role: "system", content: "Don't write your answer too long. Write your answer only in 3 sentences."};
-        document.querySelector("div.now_system_message").innerHTML = `System message: "${this.system_message}"`;
+        document.querySelector("div.now_system_message").innerHTML = `System message: "${this.system_message.content}"`;
     }
     
     update_system_message(content)
