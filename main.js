@@ -68,6 +68,7 @@ class AnswerStream{
         this.now_streaming = false;
         this.now_answer = "";
         this.answer_set = "";
+        this.signal = false;
     }
     
     start()
@@ -77,6 +78,7 @@ class AnswerStream{
             this.answer_set = "";
             this.now_answer = "";
             this.now_streaming = true;
+            this.signal = false;
         }
     }
     
@@ -93,7 +95,8 @@ class AnswerStream{
     }
     
     end()
-    {
+    {        
+        this.signal = false;
         this.now_streaming = false;
     }
 }
@@ -115,7 +118,7 @@ async function chatgpt_api(messages)
         let buffer = '';
 
         return await reader.read().then(async function processResult(result) {
-
+          if (answer_stream.signal) return "";
           buffer += new TextDecoder('utf-8').decode(result.value || new Uint8Array());
             
           var messages = buffer.split('\n\n')
@@ -165,6 +168,7 @@ async function start_recording()
 {
     document.querySelector("div.answer").innerHTML = "Recording...";
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    answer_stream.signal = true;
     
     audio_manager.audio.pause();
       
@@ -189,6 +193,8 @@ async function start_recording()
 
             messages.send_chatgpt(result.text);
           }
+          else
+            document.querySelector("div.answer").innerHTML = `No messages.`;           
     };
 
     mediaRecorder.start();    
