@@ -94,6 +94,7 @@ var answer_stream = new AnswerStream();
 
 async function chatgpt_api(messages)
 {   
+    console.log(messages);
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
         method: "POST",
         headers: {
@@ -212,6 +213,7 @@ function get_langname()
 
 async function get_tts(text)
 {
+    console.log(text);
       var langname = audio_manager.langname;
       const params = {
           method: 'POST',
