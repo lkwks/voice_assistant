@@ -36,8 +36,20 @@ button{
 
 div.answer{
     margin: 10px;
-    width: 300px;
+    width: 350px;
     height: 100px;
+}
+
+div.system_message{
+    width: 350px;
+}
+
+div.now_system_message{
+    margin: 20px;
+}
+
+div.system_message > button{
+    height: 20px;
 }
 
 input.system_message{
