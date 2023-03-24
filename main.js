@@ -20,7 +20,7 @@ class Messages{
     
     update_system_message(content)
     {
-        document.querySelector("textarea").innerHTML = "";
+        document.querySelector("textarea").value = "";
         localStorage.setItem("SYSTEM_MESSAGE", content);
         document.querySelector("div.now_system_message").innerHTML = `System message: "${content}"`;
         this.system_message[1].content = content;
