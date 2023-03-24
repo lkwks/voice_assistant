@@ -16,6 +16,7 @@ class Messages{
     
     update_system_message(content)
     {
+        document.querySelector("textarea").innerHTML = "";
         this.system_message.content = content;
     }
     
@@ -268,8 +269,6 @@ document.querySelector("button").addEventListener("mouseup", e=>
     if (mediaRecorder) stop_recording();
 });
 
-document.querySelector("input.system_message").addEventListener("change", e => messages.update_system_message(e.target.value));
-
 document.body.addEventListener("click", e => {
     if (e.target.nodeName === "INPUT" && e.target.type === "SUBMIT")
     {
@@ -284,4 +283,6 @@ document.body.addEventListener("click", e => {
             document.querySelector("div.API_KEY").classList.add("hide");
         }
     }
+    if (e.target.nodeName === "BUTTON" && e.target.parentNode.classList.contains(""))
+        messages.update_system_message(e.target.parentNode.querySelector("textarea").value);
 });
