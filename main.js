@@ -25,6 +25,7 @@ class Messages{
         this.messages_token.push(content.split(" ").length * 5);
         this.flush_if_too_many_tokens();
         var answer = await chatgpt_api([this.system_message, ...this.messages]);
+        console.log(answer);
         audio_manager.push_text(answer);
         this.messages.push({role: "assistant", content: answer});
     }
@@ -78,6 +79,7 @@ class AnswerStream{
         const sentences_arr = sentences(this.now_answer);
         if (sentences_arr.length > 1)
         {
+            console.log(sentences_arr[0]);
             await audio_manager.push_text(sentences_arr[0]);
             this.now_answer = sentences_arr[1];
         }
@@ -195,6 +197,7 @@ class AudioManager{
     
     async push_text(text)
     {
+        console.log(text);
         this.play_q.push(await get_tts(text));
         this.play();
     }
