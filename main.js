@@ -6,18 +6,22 @@ if (API_KEY && API_KEY !== "null") document.querySelector("div.API_KEY").classLi
 let TTS_API_KEY = localStorage.getItem("TTS_API_KEY");
 if (TTS_API_KEY && TTS_API_KEY !== "null") document.querySelector("div.TTS_API_KEY").classList.add("hide");
 
+let SYSTEM_MESSAGE = localStorage.getItem("SYSTEM_MESSAGE");
+if (!SYSTEM_MESSAGE || SYSTEM_MESSAGE === "null") localStorage.setItem("SYSTEM_MESSAGE", "Don't write your answer too long. Write your answer only in 3 sentences.");
+
 class Messages{
     constructor()
     {
         this.messages = [{role: "user", content: ""}];
         this.messages_token = [0];
-        this.system_message = {role: "system", content: "Don't write your answer too long. Write your answer only in 3 sentences."};
+        this.system_message = {role: "system", content: localStorage.getItem("SYSTEM_MESSAGE")};
         document.querySelector("div.now_system_message").innerHTML = `System message: "${this.system_message.content}"`;
     }
     
     update_system_message(content)
     {
         document.querySelector("textarea").innerHTML = "";
+        localStorage.setItem("SYSTEM_MESSAGE", content);
         document.querySelector("div.now_system_message").innerHTML = `System message: "${content}"`;
         this.system_message.content = content;
     }
