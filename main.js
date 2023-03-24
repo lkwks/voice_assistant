@@ -168,6 +168,9 @@ async function start_recording()
     mediaRecorder.onstop = async e => {
           var blob = new Blob(chunks, { 'type' : 'audio/webm' });
           var file = new File([blob], "audio.webm", { type: "audio/webm;" });
+          chunks = [];
+          mediaRecorder = null;
+          stream.getTracks().forEach(track => track.stop());
         
           document.querySelector("div.answer").innerHTML = `Generating...`; 
           var result = await whisper_api(file);
@@ -176,9 +179,6 @@ async function start_recording()
           if (result.text !== "") audio_manager.play_q = [];
 
           messages.send_chatgpt(result.text);
-          chunks = [];
-          mediaRecorder = null;
-          stream.getTracks().forEach(track => track.stop());
     };
 
     mediaRecorder.start();    
