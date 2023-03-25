@@ -29,11 +29,11 @@ class Messages{
     
     async send_chatgpt(content)
     {
-        this.messages.push({role: "user", content: `${content} (${localStorage.getItem("SYSTEM_MESSAGE")})`});
+        this.messages.push({role: "user", content: localStorage.getItem("SYSTEM_MESSAGE")}, {role: "user", content: content});
         this.messages_token.push(content.split(" ").length * 5);
         this.flush_if_too_many_tokens();
         await chatgpt_api(this.messages);
-        this.messages[this.messages.length-1].content = this.messages[this.messages.length-1].content.replace(` (${localStorage.getItem("SYSTEM_MESSAGE")})`, "");
+        this.messages.splice(-2, 1);
         this.messages.push({role: "assistant", content: answer_stream.answer_set});
     }
 
