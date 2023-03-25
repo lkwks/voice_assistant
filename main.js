@@ -313,6 +313,7 @@ document.body.addEventListener("click", e => {
             document.querySelector("div.SRC").classList.add("hide");
         }
     }
+    if (e.target.classList.contains("now_system_message")) e.target.parentNode.removeChild(e.target);
     if (e.target.nodeName === "BUTTON" && e.target.parentNode.classList.contains("system_message"))
         messages.update_system_message(e.target.parentNode.querySelector("textarea").value);
 });
