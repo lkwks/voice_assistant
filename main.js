@@ -307,6 +307,7 @@ document.body.addEventListener("click", e => {
             localStorage.setItem("API_KEY", e.target.value);
             document.querySelector("div.API_KEY").classList.add("hide");
         }
+        console.log(e.target, e.target.parentNode);
         if (e.target.parentNode.classList.contains("SRC"))
         {
             localStorage.setItem("SRC", e.target.value);
