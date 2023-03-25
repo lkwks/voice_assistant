@@ -29,8 +29,8 @@ main{
 }
 
 main > button{
-    width: 30%;
-    height: 30%;
+    width: 200px;
+    height: 200px;
     user-select: none;
     background-repeat : no-repeat;
     background-size : cover;
