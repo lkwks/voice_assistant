@@ -295,7 +295,7 @@ document.querySelector("button").addEventListener("mouseup", e=>
 });
 
 document.body.addEventListener("click", e => {
-        console.log(e.target, e.target.parentNode);
+        console.log(e.target, e.target.parentNode, e.target.nodeName, e.target.type);
     if (e.target.nodeName === "INPUT" && e.target.type === "SUBMIT")
     {
         if (e.target.parentNode.classList.contains("TTS_API_KEY"))
