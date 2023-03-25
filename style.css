@@ -45,6 +45,7 @@ div.answer{
 div.system_message{
     width: 350px;
     flex-direction: column;
+    font-size:9pt;
 }
 
 div.now_system_message{
