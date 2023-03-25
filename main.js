@@ -9,6 +9,9 @@ if (TTS_API_KEY && TTS_API_KEY !== "null") document.querySelector("div.TTS_API_K
 let SYSTEM_MESSAGE = localStorage.getItem("SYSTEM_MESSAGE");
 if (!SYSTEM_MESSAGE || SYSTEM_MESSAGE === "null") localStorage.setItem("SYSTEM_MESSAGE", "Don't write your answer too long. Write your answer only in 3 sentences.");
 
+let SRC = localStorage.getItem("SRC);
+if (SRC && SRC !== "null") document.querySelector("main > button").style.backgroundImage = `url(${SRC})`;
+
 class Messages{
     constructor()
     {
@@ -30,7 +33,7 @@ class Messages{
         this.messages_token.push(content.split(" ").length * 5);
         this.flush_if_too_many_tokens();
         await chatgpt_api(this.messages);
-        this.messages[this.messages.length-1].content = this.messages[this.messages.length-1].content.replace(localStorage.getItem("SYSTEM_MESSAGE"), "").trim();
+        this.messages[this.messages.length-1].content = this.messages[this.messages.length-1].content.replace(` (${localStorage.getItem("SYSTEM_MESSAGE")})`, "");
         this.messages.push({role: "assistant", content: answer_stream.answer_set});
     }
 
