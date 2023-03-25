@@ -299,17 +299,17 @@ document.body.addEventListener("click", e => {
     {
         if (e.target.parentNode.classList.contains("TTS_API_KEY"))
         {
-            localStorage.setItem("TTS_API_KEY", e.target.value);
+            localStorage.setItem("TTS_API_KEY", e.target.parentNode.querySelector("input").value);
             document.querySelector("div.TTS_API_KEY").classList.add("hide");
         }
         if (e.target.parentNode.classList.contains("API_KEY"))
         {
-            localStorage.setItem("API_KEY", e.target.value);
+            localStorage.setItem("API_KEY", e.target.parentNode.querySelector("input").value);
             document.querySelector("div.API_KEY").classList.add("hide");
         }
         if (e.target.parentNode.classList.contains("SRC"))
         {
-            localStorage.setItem("SRC", e.target.value);
+            localStorage.setItem("SRC", e.target.parentNode.querySelector("input").value);
             document.querySelector("div.SRC").classList.add("hide");
         }
     }
