@@ -30,6 +30,7 @@ class Messages{
         this.messages_token.push(content.split(" ").length * 5);
         this.flush_if_too_many_tokens();
         await chatgpt_api(this.messages);
+        this.messages[this.messages.length-1].content = this.messages[this.messages.length-1].content.replace(localStorage.getItem("SYSTEM_MESSAGE"), "").trim();
         this.messages.push({role: "assistant", content: answer_stream.answer_set});
     }
 
