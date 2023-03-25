@@ -104,6 +104,7 @@ var answer_stream = new AnswerStream();
 
 async function chatgpt_api(messages)
 {
+    console.log(messages);
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
         method: "POST",
         headers: {
@@ -116,7 +117,6 @@ async function chatgpt_api(messages)
         let buffer = '';
 
         return await reader.read().then(async function processResult(result) {
-            console.log(answer_stream.signal);
           if (answer_stream.signal) return "";
           buffer += new TextDecoder('utf-8').decode(result.value || new Uint8Array());
             
