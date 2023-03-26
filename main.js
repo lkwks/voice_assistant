@@ -1,30 +1,16 @@
 import {sentences} from './lib/tokenizer.js';
 
-let API_KEY = localStorage.getItem("API_KEY");
-if (API_KEY && API_KEY !== "null") document.querySelector("div.API_KEY").classList.add("hide");
-
-let TTS_API_KEY = localStorage.getItem("TTS_API_KEY");
-if (TTS_API_KEY && TTS_API_KEY !== "null") document.querySelector("div.TTS_API_KEY").classList.add("hide");
-
 let SYSTEM_MESSAGE = localStorage.getItem("SYSTEM_MESSAGE");
 if (!SYSTEM_MESSAGE || SYSTEM_MESSAGE === "null") localStorage.setItem("SYSTEM_MESSAGE", "Don't write your answer too long. Write your answer only in 3 sentences.");
 
 let SRC = localStorage.getItem("SRC");
-if (SRC && SRC !== "null") { document.querySelector("main > button").style.backgroundImage = `url(${SRC})`; document.querySelector("div.SRC").classList.add("hide"); }
+if (SRC && SRC !== "null") document.querySelector("main > button").style.backgroundImage = `url(${SRC})`; 
 
 class Messages{
     constructor()
     {
         this.messages = [{role:"user", content:""}];
         this.messages_token = [0];
-        document.querySelector("div.now_system_message").innerHTML = `System message: "${localStorage.getItem("SYSTEM_MESSAGE")}"`;
-    }
-    
-    update_system_message(content)
-    {
-        document.querySelector("textarea").value = "";
-        localStorage.setItem("SYSTEM_MESSAGE", content);
-        document.querySelector("div.now_system_message").innerHTML = `System message: "${content}"`;
     }
     
     async send_chatgpt(content)
@@ -60,6 +46,16 @@ class Messages{
         if (cutIndex === this.messages.length-1) cutIndex--;
         this.messages = this.messages.slice(cutIndex, this.messages.length);
         this.messages_token = this.messages_token.slice(cutIndex, this.messages_token.length);
+    }
+
+    async check_grammar()
+    {
+        let last_message = this.messages[this.messages.length-1];
+        if (last_message.role === "assistant") last_message = this.messages[this.messages.length-2];
+        let messages = [{role: "user", content: ""}, {role: "user", content: `Check grammar of this message, and recommend more naturally re-written message of it if it's unnatural: "${last_message.content}"`}];
+        document.querySelector("div.grammar_explanation").innerText = "Generating...";
+        const outputJson = await chatgpt_api(messages, false);
+        document.querySelector("div.grammar_explanation").innerText = outputJson.choices[0].message.content;
     }
 
 }
@@ -106,45 +102,59 @@ class AnswerStream{
 var messages = new Messages();
 var answer_stream = new AnswerStream();
 
-async function chatgpt_api(messages)
+
+async function chatgpt_api(messages, stream_mode=true)
 {
-    console.log(messages);
-    const response = await fetch("https://api.openai.com/v1/chat/completions", {
+    const api_url = "https://api.openai.com/v1/chat/completions";
+    let param = {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${localStorage.getItem("API_KEY")}`,
-        },
-        body: JSON.stringify({ model: "gpt-3.5-turbo", messages: messages, stream: true})
-    }).then(async response => {
-        const reader = response.body.getReader();
-        let buffer = '';
+            "Authorization": `Bearer ${localStorage.getItem("API_KEY")}`
+        }
+    };
+    let body_param = {model: localStorage.getItem("model"), messages: messages};
 
-        return await reader.read().then(async function processResult(result) {
-          if (answer_stream.signal) return "";
-          buffer += new TextDecoder('utf-8').decode(result.value || new Uint8Array());
-            
-          var messages = buffer.split('\n\n')
-          buffer = messages.pop();
-          if (messages.length === 0) 
-          {
-              answer_stream.end();
-              return answer_stream.now_answer;
-          }
-
-          for (var message of messages)
-             if (message.includes("data: ") && message.includes("[DONE]") === false)
-             {
-                 answer_stream.start();
-                 const val = JSON.parse(message.replace("data: ", ""));
-                 if (val.choices[0].delta.content)
-                     await answer_stream.add_answer(val.choices[0].delta.content);
-             }
-          
-          return await reader.read().then(processResult);
+    if (stream_mode) 
+    {
+        body_param.stream = true;
+        param.body = JSON.stringify(body_param);
+        fetch(api_url, param).then(async response => {
+            const reader = response.body.getReader();
+            let buffer = '';
+    
+            return await reader.read().then(async function processResult(result) {
+              if (answer_stream.signal) return "";
+              buffer += new TextDecoder('utf-8').decode(result.value || new Uint8Array());
+                
+              var messages = buffer.split('\n\n')
+              buffer = messages.pop();
+              if (messages.length === 0) 
+              {
+                  answer_stream.end();
+                  return answer_stream.now_answer;
+              }
+    
+              for (var message of messages)
+                 if (message.includes("data: ") && message.includes("[DONE]") === false)
+                 {
+                     answer_stream.start();
+                     const val = JSON.parse(message.replace("data: ", ""));
+                     if (val.choices[0].delta.content)
+                         await answer_stream.add_answer(val.choices[0].delta.content);
+                 }
+              
+              return await reader.read().then(processResult);
+            });
         });
-    });
-    audio_manager.push_text(response);
+        audio_manager.push_text(response);;
+    }
+    else
+    {
+        param.body = JSON.stringify(body_param);
+        const response = await fetch(api_url, param);
+        return await response.json();
+    }
 }
 
 async function whisper_api(file)
@@ -294,26 +304,6 @@ document.querySelector("button").addEventListener("mouseup", e=>
     if (mediaRecorder) stop_recording();
 });
 
-document.body.addEventListener("click", e => {
-    if (e.target.nodeName === "INPUT" && e.target.type === "submit")
-    {
-        if (e.target.parentNode.classList.contains("TTS_API_KEY"))
-        {
-            localStorage.setItem("TTS_API_KEY", e.target.parentNode.querySelector("input").value);
-            document.querySelector("div.TTS_API_KEY").classList.add("hide");
-        }
-        if (e.target.parentNode.classList.contains("API_KEY"))
-        {
-            localStorage.setItem("API_KEY", e.target.parentNode.querySelector("input").value);
-            document.querySelector("div.API_KEY").classList.add("hide");
-        }
-        if (e.target.parentNode.classList.contains("SRC"))
-        {
-            localStorage.setItem("SRC", e.target.parentNode.querySelector("input").value);
-            document.querySelector("div.SRC").classList.add("hide");
-        }
-    }
-    if (e.target.classList.contains("now_system_message")) e.target.parentNode.removeChild(e.target);
-    if (e.target.nodeName === "BUTTON" && e.target.parentNode.classList.contains("system_message"))
-        messages.update_system_message(e.target.parentNode.querySelector("textarea").value);
+document.querySelector("div.check_grammar > button").addEventListener("click", e=>{
+    messages.check_grammar();
 });

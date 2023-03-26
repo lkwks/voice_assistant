@@ -1,0 +1,47 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Voice Assistant Options</title>
+    <link href="options.css" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,height=device-height,initial-scale=1">
+  </head>
+  <body>
+    <main>
+        <h1>Voice Assistant Options</h1>
+        <div class="API_KEY">
+            <label>OpenAI API key</label>
+            <item>
+                <div><input type="text" size="44"></div>
+                <div><button>SAVE</button></div>
+            </item>
+        </div>
+        <div class="TTS_API_KEY">
+            <label>OpenAI API key</label>
+            <item>
+                <div><input type="text" size="44"></div>
+                <div><button>SAVE</button></div>
+            </item>
+        </div>
+        <div class="system_message">
+            <label>System message</label>
+            <item>
+                <textarea rows="5"></textarea>
+                <div>
+                    <button>SAVE</button>
+                </div>
+            </item>
+        </div>
+        <div class="SRC">
+            <label>Button image URL</label>
+            <item>
+                <div><input type="text" size="44"></div>
+                <div>
+                    <button>SAVE</button>
+                </div>
+            </item>
+        </div>
+    </main>
+    <script src="options.js"></script>
+  </body>
+</html>

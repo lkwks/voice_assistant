@@ -34,6 +34,7 @@ main > button{
     user-select: none;
     background-repeat : no-repeat;
     background-size : cover;
+    border: 0px;
 }
 
 div.answer{
@@ -42,17 +43,17 @@ div.answer{
     height: 100px;
 }
 
-div.system_message{
+div.check_grammar{
     width: 350px;
     flex-direction: column;
     font-size:9pt;
 }
 
-div.now_system_message{
+div.grammar_explanation{
     margin: 10px;
 }
 
-div.system_message > button{
+div.check_grammar > button{
     height: 40px;
 }
 
@@ -67,4 +68,25 @@ textarea{
 
 .hide{
     display:none;
+}
+
+div.howtouse {
+    font-size: 10pt;
+    position: absolute;
+    right: 0px;
+    top: 0px;
+}
+
+div.title > button {
+    background-color: #eee;
+    border: 0px;
+    color: #333;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+}
+
+div.title {
+    height: 20px;
+    position: relative;
 }
