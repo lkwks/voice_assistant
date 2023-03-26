@@ -4,7 +4,11 @@ let SYSTEM_MESSAGE = localStorage.getItem("SYSTEM_MESSAGE");
 if (!SYSTEM_MESSAGE || SYSTEM_MESSAGE === "null") localStorage.setItem("SYSTEM_MESSAGE", "Don't write your answer too long. Write your answer only in 3 sentences.");
 
 let SRC = localStorage.getItem("SRC");
-if (SRC && SRC !== "null") document.querySelector("div.button > button").style.backgroundImage = `url(${SRC})`; 
+if (SRC && SRC !== "null")
+{
+    document.querySelector("div.button > button").innerHTML = "";
+    document.querySelector("div.button > button").style.backgroundImage = `url(${SRC})`; 
+}
 
 class Messages{
     constructor()
