@@ -28,14 +28,18 @@ main{
     }
 }
 
-main > button{
+div.button{
+    align-itemes: center;
+    justify-content: center;
+    height: 300px;
+}
+
+div.button > button{
     width: 200px;
     height: 200px;
-    user-select: none;
     background-repeat : no-repeat;
     background-size : cover;
     border: 0px;
-    margin: 20px;
 }
 
 div.answer{
@@ -46,9 +50,8 @@ div.answer{
 
 div.check_grammar{
     width: 100%;
-    border: 1px solid black;
-    align-items: flex-start;
-    height: calc(100% - 300px);
+    justify-content: flex-start;
+    height: calc(100% - 420px);
     flex-direction: column;
     font-size:9pt;
     padding: 10px;
