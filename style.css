@@ -58,6 +58,7 @@ div.check_grammar{
 
 div.grammar_explanation{
     margin: 10px;
+    overflow: auto;
 }
 
 div.check_grammar > button{
