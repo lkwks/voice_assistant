@@ -21,7 +21,7 @@ document.body.addEventListener("click", e => {
             localStorage.setItem("API_KEY", parentNode.querySelector("input").value);
         if (parentNode.classList.contains("SRC"))
             localStorage.setItem("SRC", parentNode.querySelector("input").value);
-        if (parentNode.classList.contains("system_message"))
-            localStorage.setItem("system_message", parentNode.querySelector("textarea").value);
+        if (parentNode.classList.contains("SYSTEM_MESSAGE"))
+            localStorage.setItem("SYSTEM_MESSAGE", parentNode.querySelector("textarea").value);
     }
 });
