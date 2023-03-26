@@ -20,11 +20,11 @@ main{
     position: relative;
 }
 
-@media (min-width: 800px)
+@media (min-width: 600px)
 {
     main{
         height: 85%;
-        width: 70%;
+        width: 600px;
     }
 }
 
@@ -89,5 +89,5 @@ div.title > button {
 div.title {
     height: 20px;
     position: relative;
-    width: 400px;
+    width: 100%;
 }
