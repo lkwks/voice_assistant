@@ -89,4 +89,5 @@ div.title > button {
 div.title {
     height: 20px;
     position: relative;
+    max-width: 400px;
 }
