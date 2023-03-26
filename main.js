@@ -93,7 +93,6 @@ class AnswerStream{
             document.querySelector("div.grammar_explanation").innerText = this.answer_set;
         this.now_answer += answer;
         const sentences_arr = sentences(this.now_answer);
-        console.log(audio_mode);
         if (sentences_arr.length > 1 && audio_mode)
         {
             await audio_manager.push_text(sentences_arr[0]);
@@ -114,7 +113,6 @@ var answer_stream = new AnswerStream();
 
 async function chatgpt_api(messages, stream_mode=true, audio_mode=true)
 {
-    console.log(messages);
     const api_url = "https://api.openai.com/v1/chat/completions";
     let param = {
         method: "POST",
@@ -123,13 +121,12 @@ async function chatgpt_api(messages, stream_mode=true, audio_mode=true)
             "Authorization": `Bearer ${localStorage.getItem("API_KEY")}`
         }
     };
-    let body_param = {model: localStorage.getItem("model"), messages: messages};
+    let body_param = {model: "gpt-3.5-turbo", messages: messages};
 
     if (stream_mode) 
     {
         body_param.stream = true;
         param.body = JSON.stringify(body_param);
-        console.log(param.body);
         const response = await fetch(api_url, param).then(async response => {
             const reader = response.body.getReader();
             let buffer = '';
@@ -176,7 +173,6 @@ async function whisper_api(file)
     formData.append('file', file);
     formData.append('language', 'en');
 
-    console.log(file);
     const response = await fetch("https://api.openai.com/v1/audio/transcriptions", {
         method: "POST",
         headers: {
@@ -184,7 +180,6 @@ async function whisper_api(file)
         },
         body: formData
     });
-    console.log(response);
     if (response.status === 400) return "";
     return await response.json();
 }
