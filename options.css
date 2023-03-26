@@ -33,6 +33,7 @@ main{
 
 main > div {
     min-height: 150px;
+    width: 100%;
 }
 
 h1 {
@@ -41,15 +42,20 @@ h1 {
 
 main label {
     width: 30%;
-    padding: 10px;
+    justify-content: center;
+    align-items: center;
 }
 
 main item {
     width: 70%;
 }
 
-input, textarea{
+item > div:first-child {
     width: calc(100% - 50px);
+}
+
+input, textarea{
+    width: 100%;
 }
 
 button{
