@@ -60,7 +60,7 @@ class Messages{
         if (last_message.role === "assistant") last_message = this.messages[this.messages.length-2];
         let messages = [{role: "user", content: ""}, {role: "user", content: `Check grammar of this message, and recommend more naturally re-written message of it if it's unnatural: "${last_message.content}"`}];
         document.querySelector("div.check_grammar > button").disabled = true;
-        chatgpt_api(messages, true, false);
+        await chatgpt_api(messages, true, false);
         document.querySelector("div.check_grammar > button").disabled = false;
     }
 
