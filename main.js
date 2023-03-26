@@ -22,7 +22,9 @@ class Messages{
         this.messages.push({role: "user", content: localStorage.getItem("SYSTEM_MESSAGE")}, {role: "user", content: content});
         this.messages_token.push(content.split(" ").length * 5);
         this.flush_if_too_many_tokens();
+        document.querySelector("div.check_grammar > button").disabled = true;
         await chatgpt_api(this.messages);
+        document.querySelector("div.check_grammar > button").disabled = false;
         this.messages.splice(-2, 1);
         this.messages.push({role: "assistant", content: answer_stream.answer_set});
     }
@@ -91,6 +93,7 @@ class AnswerStream{
             document.querySelector("div.grammar_explanation").innerText = this.answer_set;
         this.now_answer += answer;
         const sentences_arr = sentences(this.now_answer);
+        console.log(audio_mode);
         if (sentences_arr.length > 1 && audio_mode)
         {
             await audio_manager.push_text(sentences_arr[0]);
@@ -203,7 +206,7 @@ async function start_recording()
           mediaRecorder = null;
           stream.getTracks().forEach(track => track.stop());
         
-          document.querySelector("div.answer").innerHTML = `Generating...`; 
+          document.querySelector("div.answer").innerHTML = `Generating...`;
           var result = await whisper_api(file);
           if (result.text)
           {
