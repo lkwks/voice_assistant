@@ -41,8 +41,17 @@ h1 {
 
 main label {
     width: 30%;
+    padding: 10px;
 }
 
-textarea {
-    width: 80%;
+main item {
+    width: 70%;
+}
+
+input, textarea{
+    width: calc(100% - 50px);
+}
+
+button{
+    width: 50px;
 }
