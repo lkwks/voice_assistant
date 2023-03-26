@@ -53,9 +53,7 @@ class Messages{
         let last_message = this.messages[this.messages.length-1];
         if (last_message.role === "assistant") last_message = this.messages[this.messages.length-2];
         let messages = [{role: "user", content: ""}, {role: "user", content: `Check grammar of this message, and recommend more naturally re-written message of it if it's unnatural: "${last_message.content}"`}];
-        document.querySelector("div.grammar_explanation").innerText = "Generating...";
-        const outputJson = await chatgpt_api(messages, false);
-        document.querySelector("div.grammar_explanation").innerText = outputJson.choices[0].message.content;
+        chatgpt_api(messages, false, false);
     }
 
 }
@@ -80,12 +78,14 @@ class AnswerStream{
         }
     }
     
-    async add_answer(answer)
+    async add_answer(answer, audio_mode)
     {
         this.answer_set += answer;
+        if (audio_mode === false)
+            document.querySelector("div.grammar_explanation").innerText = this.answer_set;
         this.now_answer += answer;
         const sentences_arr = sentences(this.now_answer);
-        if (sentences_arr.length > 1)
+        if (sentences_arr.length > 1 && audio_mode)
         {
             await audio_manager.push_text(sentences_arr[0]);
             this.now_answer = sentences_arr[1];
@@ -103,7 +103,7 @@ var messages = new Messages();
 var answer_stream = new AnswerStream();
 
 
-async function chatgpt_api(messages, stream_mode=true)
+async function chatgpt_api(messages, stream_mode=true, audio_mode=true)
 {
     const api_url = "https://api.openai.com/v1/chat/completions";
     let param = {
@@ -141,13 +141,14 @@ async function chatgpt_api(messages, stream_mode=true)
                      answer_stream.start();
                      const val = JSON.parse(message.replace("data: ", ""));
                      if (val.choices[0].delta.content)
-                         await answer_stream.add_answer(val.choices[0].delta.content);
+                         await answer_stream.add_answer(val.choices[0].delta.content, audio_mode);
                  }
               
               return await reader.read().then(processResult);
             });
         });
-        audio_manager.push_text(response);;
+        if (audio_mode)
+            audio_manager.push_text(response);
     }
     else
     {
