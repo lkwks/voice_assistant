@@ -129,6 +129,7 @@ async function chatgpt_api(messages, stream_mode=true, audio_mode=true)
     {
         body_param.stream = true;
         param.body = JSON.stringify(body_param);
+        console.log(param.body);
         const response = await fetch(api_url, param).then(async response => {
             const reader = response.body.getReader();
             let buffer = '';
