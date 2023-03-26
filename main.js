@@ -4,7 +4,7 @@ let SYSTEM_MESSAGE = localStorage.getItem("SYSTEM_MESSAGE");
 if (!SYSTEM_MESSAGE || SYSTEM_MESSAGE === "null") localStorage.setItem("SYSTEM_MESSAGE", "Don't write your answer too long. Write your answer only in 3 sentences.");
 
 let SRC = localStorage.getItem("SRC");
-if (SRC && SRC !== "null") document.querySelector("main > button").style.backgroundImage = `url(${SRC})`; 
+if (SRC && SRC !== "null") document.querySelector("div.button > button").style.backgroundImage = `url(${SRC})`; 
 
 class Messages{
     constructor()
@@ -284,22 +284,22 @@ document.addEventListener("keyup", e=>
     if (e.key === " " && mediaRecorder) stop_recording();
 });
 
-document.querySelector("button").addEventListener("touchstart", e=>
+document.querySelector("div.button > button").addEventListener("touchstart", e=>
 {
     if (mediaRecorder === null || mediaRecorder && mediaRecorder.state !== "recording") start_recording();
 });
 
-document.querySelector("button").addEventListener("touchend", e=>
+document.querySelector("div.button > button").addEventListener("touchend", e=>
 {
     if (mediaRecorder) stop_recording();
 });
 
-document.querySelector("button").addEventListener("mousedown", e=>
+document.querySelector("div.button > button").addEventListener("mousedown", e=>
 {
     if (mediaRecorder === null || mediaRecorder && mediaRecorder.state !== "recording") start_recording();
 });
 
-document.querySelector("button").addEventListener("mouseup", e=>
+document.querySelector("div.button > button").addEventListener("mouseup", e=>
 {
     if (mediaRecorder) stop_recording();
 });
