@@ -64,6 +64,7 @@ div.grammar_explanation{
 
 div.check_grammar > button{
     height: 40px;
+    background-color: #fafafa;
 }
 
 div.API_KEY {
