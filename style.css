@@ -37,7 +37,6 @@ div.button{
 div.button > button{
     width: 200px;
     height: 200px;
-    background-repeat : no-repeat;
     background-size : cover;
     border: 0px;
 }
@@ -54,7 +53,7 @@ div.check_grammar{
     height: calc(100% - 420px);
     flex-direction: column;
     padding: 10px;
-    border: 1px solid #fafafa;
+    border: 1px solid #eee;
 }
 
 div.grammar_explanation{
@@ -66,6 +65,7 @@ div.grammar_explanation{
 div.check_grammar > button{
     height: 40px;
     background-color: #fafafa;
+    border: 0px;
 }
 
 div.API_KEY {
