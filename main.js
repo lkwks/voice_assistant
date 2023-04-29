@@ -260,16 +260,29 @@ function get_langname()
 async function get_tts(text)
 {
     console.log(text);
-      var langname = audio_manager.langname;
-      const params = {
+    let params, response, blob;
+
+    if (localStorage.getItem("API_SERVICE_PROVIDER") === "google") {
+    var langname = audio_manager.langname;
+      params = {
           method: 'POST',
           headers: {'Content-Type': 'application/json'},
           body: JSON.stringify({ input: { text:text }, voice: {languageCode: langname.substring(0,5), name: langname}, audioConfig: { audioEncoding: 'LINEAR16'}}),
         };
-  
-      const response = await fetch(`https://texttospeech.googleapis.com/v1/text:synthesize?key=${localStorage.getItem("TTS_API_KEY")}`, params);
-  
-      const blob = new Blob([Uint8Array.from(atob((await response.json()).audioContent), c => c.charCodeAt(0))], { type: 'audio/mp3' });
+      response = await fetch(`https://texttospeech.googleapis.com/v1/text:synthesize?key=${localStorage.getItem("TTS_API_KEY")}`, params);
+      blob = new Blob([Uint8Array.from(atob((await response.json()).audioContent), c => c.charCodeAt(0))], { type: 'audio/mp3' });
+    } else {
+      params = {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json',
+                      'accept': 'audio/mpeg',
+                      'xi-api-key': localStorage.getItem("TTS_API_KEY_ELEVENLABS")
+                     },
+            body: JSON.stringify({ text:text, model_id: "eleven_monolingual_v1", voice_settings: { stability: 0.5, similarity_boost: 0.75 } }),
+      };
+      response = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${localStorage.getItem("VOICE_ID_ELEVENLABS")}`, params);
+      blob = new Blob([await response.arrayBuffer()], { type: 'audio/mpeg' });
+    }
       return URL.createObjectURL(blob);
 }
 
