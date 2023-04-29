@@ -184,6 +184,29 @@ async function whisper_api(file)
     return await response.json();
 }
 
+/*
+
+지금 풀어야 하는 문제.
+
+1. start_recording()이 호출된 후 
+          document.querySelector("div.answer").innerHTML = `Generating...`;
+   이 코드가 실행됐을 때, 이후
+            var result = await whisper_api(file);
+   이 코드의 실행이 끝날 때까지 시간이 3초가 넘어가면 
+          document.querySelector("div.answer").innerHTML = `Timeout!`;
+   이런 코드를 띄우고 싶다.
+
+2. Timeout 등의 이유로 유저가 다시 start_recording()을 호출했을 때,
+    이전에 실행되던 start_recording()이 await whisper_api(file); 부분에서 멈춰있는 상태라면
+    이전에 실행되던 start_recording()을 취소하고 새로운 start_recording()을 실행하고 싶다.
+    이건 어떻게 구현해야 되지?
+
+    내 생각엔, await whisper_api(file); 부분 실행 전에 시간을 기록하고.
+    만약 await whisper_api(file); 부분 실행 후에 시간을 기록했을 때, 이 두 시간의 차이가 3초가 넘어가면
+    더 이상 코드를 진행하지 않도록 하면 되겠다.
+
+*/
+
 async function start_recording()
 {
     document.querySelector("div.answer").innerHTML = "Recording...";
@@ -196,7 +219,7 @@ async function start_recording()
   
     mediaRecorder.ondataavailable = e => chunks.push(e.data);
   
-    mediaRecorder.onstop = async e => {
+    mediaRecorder.onstop = async () => {
           var blob = new Blob(chunks, { 'type' : 'audio/webm' });
           var file = new File([blob], "audio.webm", { type: "audio/webm;" });
           chunks = [];
@@ -204,18 +227,23 @@ async function start_recording()
           stream.getTracks().forEach(track => track.stop());
         
           document.querySelector("div.answer").innerHTML = `Generating...`;
+          var time_before_whisper_api = new Date().getTime();
+          setTimeout(()=>{if (new Date().getTime() - time_before_whisper_api > 3000 && document.querySelector("div.answer").innerHTML === `Generating...`) document.querySelector("div.answer").innerHTML = `Timeout!`;}, 3000);
           var result = await whisper_api(file);
-          if (result.text)
+          if (new Date().getTime() - time_before_whisper_api < 3000)
           {
-            document.querySelector("div.answer").innerHTML = `You: "${result.text}"`; 
+            if (result.text)
+            {
+                document.querySelector("div.answer").innerHTML = `You: "${result.text}"`; 
 
-            if (result.text !== "") audio_manager.play_q = [];
+                if (result.text !== "") audio_manager.play_q = [];
 
-            answer_stream.signal = false;
-            messages.send_chatgpt(result.text);
-          }
-          else
-            document.querySelector("div.answer").innerHTML = `No messages.`;           
+                answer_stream.signal = false;
+                messages.send_chatgpt(result.text);
+              }
+            else
+                document.querySelector("div.answer").innerHTML = `No messages.`;           
+         } 
     };
 
     mediaRecorder.start();    
