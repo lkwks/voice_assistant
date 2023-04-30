@@ -228,9 +228,9 @@ async function start_recording()
         
           document.querySelector("div.answer").innerHTML = `Generating...`;
           var time_before_whisper_api = new Date().getTime();
-          setTimeout(()=>{if (document.querySelector("div.answer").innerHTML === `Generating...`) document.querySelector("div.answer").innerHTML = `Timeout!`;}, 5000);
+          setTimeout(()=>{if (document.querySelector("div.answer").innerHTML === `Generating...`) document.querySelector("div.answer").innerHTML = `Timeout!`;}, 8000);
           var result = await whisper_api(file);
-          if (new Date().getTime() - time_before_whisper_api < 5000)
+          if (new Date().getTime() - time_before_whisper_api < 8000)
           {
             if (result.text)
             {
