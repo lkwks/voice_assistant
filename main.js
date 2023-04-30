@@ -242,7 +242,7 @@ async function start_recording()
                 messages.send_chatgpt(result.text);
               }
             else
-                document.querySelector("div.answer").innerHTML = `No messages.`;           
+                document.querySelector("div.answer").innerHTML = `No messages. Check mic setup.`;           
          } 
     };
 
