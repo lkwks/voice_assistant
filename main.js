@@ -80,7 +80,8 @@ document.querySelector("div.button > button").addEventListener("mouseup", e=>
 {
     if (mediaRecorder) stop_recording();
 });
-
+/*
 document.querySelector("div.check_grammar > button").addEventListener("click", e=>{
     messages.check_grammar();
 });
+*/

@@ -1,4 +1,4 @@
-import { answer_stream } from "./common.js";
+import { answer_stream, chatgpt_api } from "./common.js";
 
 export class Messages{
     constructor()
