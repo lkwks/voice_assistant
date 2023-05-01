@@ -1,4 +1,4 @@
-import { audio_manager } from "./common";
+import { audio_manager } from "./common.js";
 import {sentences} from './lib/tokenizer.js';
 
 export class AnswerStream{
