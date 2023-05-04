@@ -38,6 +38,9 @@ export class ChooseSubject {
             "Hey {{USER_NAME}}, hope you're doing well. Have you been keeping busy lately? Whether it's been with friends, family, or alone, I'm curious to hear about any unique or memorable experiences you've had. Was there anything that was particularly challenging, or any moments that really made you happy?"
         ]});
         localStorage.setItem("SUBJECT_LIST", JSON.stringify(this.subject_list));
+
+        // 이렇게 하지 말고, subject_list의 각 원소를 잘 정리해서 이걸 예시로 해서 '이거랑 유사한 내용의 질문을 만들어서 리턴해줘'라고
+        // 챗지피티한테 요청해서 그렇게 얻은 결과를 tts로 전달하는 게 더 좋을 것 같다. 이것도 맨날 정해진 걸 쓰면 하는 사람이 재미가 없단 말이지.
     }
 
     render_target() {
@@ -47,20 +50,27 @@ export class ChooseSubject {
             $subject.innerText = element.subject;
             this.$target.appendChild($subject);
         });
+        // subject_list에 새 주제를 추가하는 기능도 구현할 계획.
     }
 
     choose_subject(subject) {
         // $target을 hidden으로 만들고, div.chosen_subject에서 hidden을 제거.
-        this.$target.classList.add("hidden");
+        this.$target.parentNode.classList.add("hidden");
         document.querySelector("div.chosen_subject").classList.remove("hidden");
         // div.chosen_subject의 내용을 바꿈.
         document.querySelector("div.chosen_subject").innerText = subject;
 
         // question을 tts로 전달하고, message 큐에 질문을 넣음.
         const found_questions = this.subject_list.find(element => element.subject === subject);
+
+        // 이렇게 하지 말고, subject_list의 각 원소를 잘 정리해서 이걸 예시로 해서 '이거랑 유사한 내용의 질문을 만들어서 리턴해줘'라고
+        // 챗지피티한테 요청해서 그렇게 얻은 결과를 tts로 전달하는 게 더 좋을 것 같다. 이것도 맨날 정해진 걸 쓰면 하는 사람이 재미가 없단 말이지.
+        // 일단 found_questions.questions의 원소들을 잘 조합해 챗지피티에 넣을 프롬프트를 만들어야겠다.
+
         const question = found_questions.questions[Math.floor(Math.random() * found_questions.questions.length)].replace("{{USER_NAME}}", localStorage.getItem("USER_NAME"));
         messages.messages.push({role: "assistant", content: question});
         messages.messages_token.push(question.split(" ").length * 5);
         audio_manager.push_text(question);
+
     }
 }
