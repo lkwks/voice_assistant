@@ -72,5 +72,6 @@ export class ChooseSubject {
         messages.messages_token.push(question.split(" ").length * 5);
         audio_manager.push_text(question);
 
+        // 생성 커맨드 날린 후 현재 무슨 상태인지 명시가 없으니 좀 답답. 
     }
 }
