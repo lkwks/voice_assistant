@@ -55,10 +55,10 @@ export class ChooseSubject {
         document.querySelector("div.chosen_subject").classList.remove("hidden");
         // div.chosen_subject의 내용을 바꿈.
         document.querySelector("div.chosen_subject").innerText = subject;
-        
+
         // question을 tts로 전달하고, message 큐에 질문을 넣음.
         const found_questions = this.subject_list.find(element => element.subject === subject);
-        const question = found_questions.questions[Math.floor(Math.random() * found_questions.questions.length)];
+        const question = found_questions.questions[Math.floor(Math.random() * found_questions.questions.length)].replace("{{USER_NAME}}", localStorage.getItem("USER_NAME"));
         messages.messages.push({role: "assistant", content: question});
         messages.messages_token.push(question.split(" ").length * 5);
         audio_manager.push_text(question);
