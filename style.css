@@ -134,3 +134,7 @@ div.subject_to_choose {
     background-color: #eee;
     color: #555;
 }
+
+div.subject_to_choose:hover{
+    background-color: #ddd;
+}
