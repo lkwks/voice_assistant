@@ -136,3 +136,11 @@ div.subject_to_choose {
 div.subject_to_choose:hover{
     background-color: #ddd;
 }
+
+div.api_status {
+    border: 1px solid #ddd;
+}
+
+div.chosen_subject {
+    border: 1px solid #ddd;
+}
