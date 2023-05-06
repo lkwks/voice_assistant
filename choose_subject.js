@@ -28,7 +28,7 @@ export class ChooseSubject {
         this.subject_list.forEach(element => {
             const $subject = document.createElement("div");
             $subject.className = "subject_to_choose";
-            $subject.innerText = element.subject;
+            $subject.innerText = element;
             this.$target.appendChild($subject);
         });
         // subject_list에 새 주제를 추가하는 기능(+ 버튼)도 구현할 계획.
