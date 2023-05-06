@@ -1,4 +1,4 @@
-import { messages, audio_manager } from "./common.js";
+import { messages, audio_manager, chatgpt_api } from "./common.js";
 
 export class ChooseSubject {
     constructor($target) {
@@ -10,33 +10,14 @@ export class ChooseSubject {
           this.init_subject_list();
         else
           this.subject_list = JSON.parse(localStorage.getItem("SUBJECT_LIST"));
-        this.$target.addEventListener("click", e => {
-            if (e.target.classList.contains("subject_to_choose")) this.choose_subject(e.target.innerText);
+        this.$target.addEventListener("click", async e => {
+            if (e.target.classList.contains("subject_to_choose")) await this.choose_subject(e.target.innerText);
         });
         this.render_target();
     }
 
     init_subject_list() {
-        this.subject_list = [];
-        this.subject_list.push({ subject: "How was your day?", questions: [
-            "Hey there, {{USER_NAME}}! How did your day go today? Anything noteworthy to share? Was the weather today good? Whether good or bad, I'm curious to hear about any interesting experiences or events you had. Tell me all about it!",
-            "Greetings, {{USER_NAME}}! I hope you're doing well. Did anything exciting or unusual happen? I'm all ears and would love to hear more about what you've been up to.",
-            "Hi, {{USER_NAME}}! I hope you had a good day today! Anything special or out of the ordinary happen? Feel free to share any highlights or challenges with me - I'm here to listen."
-        ]});
-        this.subject_list.push({subject: "What are you studying?", questions: [
-            "Hey there, {{USER_NAME}}! What are you studying today? I'm curious to hear about what you're learning. Feel free to share any interesting facts or insights you've gained.",
-            "What have you been up to, {{USER_NAME}}? Have you been studying anything interesting lately? I'd love to hear about any new knowledge or skills you've acquired in your studies. Is there anything specific you're hoping to achieve in your field of study?",
-            "Hey, {{USER_NAME}}! What have you been learning lately? Are there any topics or subjects that you find particularly fascinating? I'd love to hear about your interests and what you've been exploring in your free time."
-            ]});
-        this.subject_list.push({subject: "Interests recently?", questions: [
-            "Hey there, {{USER_NAME}}! What have you been interested in lately? I'm curious to hear about what you've been exploring. Feel free to share any interesting facts or insights you've gained.",
-            "Hello there, {{USER_NAME}}! Have you been pursuing any new hobbies or interests recently? What's something new that you've learned or discovered in those areas? I'm always curious to learn about new things and hear different perspectives!",
-        ]});
-        this.subject_list.push({subject: "Activities recently?", questions: [
-            "Hey, {{USER_NAME}}! What have you been up to lately? Have you had the chance to hang out with friends or family? If so, did anything fun or exciting happen during those activities? Or, if you've been spending time alone, have you had any new experiences or challenges to share?",
-            "Hi there, {{USER_NAME}}! Have you done anything interesting or engaging lately, either with others or on your own? Was there anything that really stood out to you from those experiences, whether good or bad? I'm interested to hear about your recent adventures!",
-            "Hey {{USER_NAME}}, hope you're doing well. Have you been keeping busy lately? Whether it's been with friends, family, or alone, I'm curious to hear about any unique or memorable experiences you've had. Was there anything that was particularly challenging, or any moments that really made you happy?"
-        ]});
+        this.subject_list = ["How was your day?", "What are you studying?", "Interests recently?", "Activities recently?"];
         localStorage.setItem("SUBJECT_LIST", JSON.stringify(this.subject_list));
 
         // 이렇게 하지 말고, subject_list의 각 원소를 잘 정리해서 이걸 예시로 해서 '이거랑 유사한 내용의 질문을 만들어서 리턴해줘'라고
@@ -50,10 +31,10 @@ export class ChooseSubject {
             $subject.innerText = element.subject;
             this.$target.appendChild($subject);
         });
-        // subject_list에 새 주제를 추가하는 기능도 구현할 계획.
+        // subject_list에 새 주제를 추가하는 기능(+ 버튼)도 구현할 계획.
     }
 
-    choose_subject(subject) {
+    async choose_subject(subject) {
         // $target을 hidden으로 만들고, div.chosen_subject에서 hidden을 제거.
         this.$target.parentNode.classList.add("hidden");
         document.querySelector("div.chosen_subject").classList.remove("hidden");
@@ -61,17 +42,20 @@ export class ChooseSubject {
         document.querySelector("div.chosen_subject").innerText = subject;
 
         // question을 tts로 전달하고, message 큐에 질문을 넣음.
-        const found_questions = this.subject_list.find(element => element.subject === subject);
 
-        // 이렇게 하지 말고, subject_list의 각 원소를 잘 정리해서 이걸 예시로 해서 '이거랑 유사한 내용의 질문을 만들어서 리턴해줘'라고
-        // 챗지피티한테 요청해서 그렇게 얻은 결과를 tts로 전달하는 게 더 좋을 것 같다. 이것도 맨날 정해진 걸 쓰면 하는 사람이 재미가 없단 말이지.
-        // 일단 found_questions.questions의 원소들을 잘 조합해 챗지피티에 넣을 프롬프트를 만들어야겠다.
+        const code_block = "\n```yaml\nquestion: [greeting][a question with context or stories with a minimum length of 100 words]\n```";
+        const messages_generate_question = [{role: "user", content: ""}, 
+{role: "user", content: `Can you provide me with an example of a question that a chatbot can use to initiate a conversation with a user? \
+The example should include a greeting with '{{USER_NAME}}' and a question that conveys the intent of '${subject}', with a minimum length of 100 words. You may add any additional context or stories to the question itself that make it engaging. Please provide it in the following YAML file format.${code_block}`}];
+        document.querySelector("div.api_status").innerText = "Generating a question...";
+        const generated_question = await chatgpt_api(messages_generate_question, false, false);
 
-        const question = found_questions.questions[Math.floor(Math.random() * found_questions.questions.length)].replace("{{USER_NAME}}", localStorage.getItem("USER_NAME"));
-        messages.messages.push({role: "assistant", content: question});
-        messages.messages_token.push(question.split(" ").length * 5);
-        audio_manager.push_text(question);
+        const found_question = generated_question.choices[0].message.content.split("```")[1].split("question:")[1];
+        messages.messages.push({role: "assistant", content: found_question});
+        messages.messages_token.push(found_question.split(" ").length * 5);
 
-        // 생성 커맨드 날린 후 현재 무슨 상태인지 명시가 없으니 좀 답답. 
+        document.querySelector("div.api_status").innerText = "Generating audio...";
+        audio_manager.push_text(found_question);
+        document.querySelector("div.api_status").innerText = "Ready";
     }
 }
