@@ -17,18 +17,18 @@ export class ChooseSubject {
     }
 
     init_subject_list() {
-        this.subject_list = ["How was your day?", "What are you studying?", "Interests recently?", "Activities recently?"];
+        this.subject_list = [{subject: "How was your day?", latest_result: "Hello, {{USER_NAME}}! How was your day?"},
+        {subject: "What are you studying?", latest_result: "Hello, {{USER_NAME}}! What are you studying?"}, 
+        {subject: "Interests recently?", latest_result: "Hello, {{USER_NAME}}! Interests recently?"},
+        {subject: "Activities recently?", latest_result: "Hello, {{USER_NAME}}! Activities recently?"}];
         localStorage.setItem("SUBJECT_LIST", JSON.stringify(this.subject_list));
-
-        // 이렇게 하지 말고, subject_list의 각 원소를 잘 정리해서 이걸 예시로 해서 '이거랑 유사한 내용의 질문을 만들어서 리턴해줘'라고
-        // 챗지피티한테 요청해서 그렇게 얻은 결과를 tts로 전달하는 게 더 좋을 것 같다. 이것도 맨날 정해진 걸 쓰면 하는 사람이 재미가 없단 말이지.
     }
 
     render_target() {
         this.subject_list.forEach(element => {
             const $subject = document.createElement("div");
             $subject.className = "subject_to_choose";
-            $subject.innerText = element;
+            $subject.innerText = element.subject;
             this.$target.appendChild($subject);
         });
         // subject_list에 새 주제를 추가하는 기능(+ 버튼)도 구현할 계획.
@@ -41,21 +41,27 @@ export class ChooseSubject {
         // div.chosen_subject의 내용을 바꿈.
         document.querySelector("div.chosen_subject").innerText = subject;
 
-        // question을 tts로 전달하고, message 큐에 질문을 넣음.
+        const question = this.subject_list.find(element => element.subject === subject).latest_result;
+        messages.messages.push({role: "assistant", content: question.replace(/{{USER_NAME}}/g, localStorage.getItem("USER_NAME"))});
+        messages.messages_token.push(question.split(" ").length * 5);
+        document.querySelector("div.api_status").innerText = "Generating audio...";
+        audio_manager.push_text(question);
+        document.querySelector("div.api_status").innerText = "Audio generated.";
 
         const code_block = "\n```yaml\nquestion: [greeting][a question with context or stories with a minimum length of 100 words]\n```";
         const messages_generate_question = [{role: "user", content: ""}, 
 {role: "user", content: `Can you provide me with an example of a question that a chatbot can use to initiate a conversation with a user? \
 The example should include a greeting with '{{USER_NAME}}' and a question that conveys the intent of '${subject}', with a minimum length of 100 words. You may add any additional context or stories to the question itself that make it engaging. Please provide it in the following YAML file format.${code_block}`}];
-        document.querySelector("div.api_status").innerText = "Generating a question...";
         const generated_question = await chatgpt_api(messages_generate_question, false, false);
 
-        const found_question = generated_question.choices[0].message.content.split("```")[1].split("question:")[1];
-        messages.messages.push({role: "assistant", content: found_question});
-        messages.messages_token.push(found_question.split(" ").length * 5);
-
-        document.querySelector("div.api_status").innerText = "Generating audio...";
-        audio_manager.push_text(found_question);
-        document.querySelector("div.api_status").innerText = "Ready";
+        if (generated_question.choices && generated_questions.choices.length > 0) {
+            this.subject_list.forEach( (element, index) => {
+                if (element.subject === subject) {
+                    this.subject_list[index].latest_result = this.subject_list.generated_question.choices[0].message.content.split("```")[1].split("question:")[1];
+                }
+            });
+            localStorage.setItem("SUBJECT_LIST", JSON.stringify(this.subject_list));
+        }
+ 
     }
 }
