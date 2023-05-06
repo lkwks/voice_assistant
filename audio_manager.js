@@ -25,15 +25,21 @@ export class AudioManager{
     
     async push_text(text)
     {
-        this.play_q.push(await this.get_tts(text));
+        let tts_result = await this.get_tts(text);
+        if (tts_result)
+            this.play_q.push(tts_result);
+        else {
+            tts_result = await this.get_tts(text, true);
+            this.play_q.push(tts_result);
+        }
         this.play();
     }
 
-    async get_tts(text) {
+    async get_tts(text, eleven_ranout = false) {
         console.log(text);
         let params, response, blob;
     
-        if (localStorage.getItem("API_SERVICE_PROVIDER") === "google") {
+        if (localStorage.getItem("API_SERVICE_PROVIDER") === "google" || eleven_ranout) {
         var langname = this.langname;
           params = {
               method: 'POST',
@@ -52,7 +58,10 @@ export class AudioManager{
                 body: JSON.stringify({ text:text, model_id: "eleven_monolingual_v1", voice_settings: { stability: 0.5, similarity_boost: 0.75 } }),
           };
           response = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${localStorage.getItem("VOICE_ID_ELEVENLABS")}`, params);
-          blob = new Blob([await response.arrayBuffer()], { type: 'audio/mpeg' });
+          if (response.ok)
+            blob = new Blob([await response.arrayBuffer()], { type: 'audio/mpeg' });
+          else
+            return "";
         }
         return URL.createObjectURL(blob);    
     }
