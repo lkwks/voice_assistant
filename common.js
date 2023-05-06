@@ -2,13 +2,15 @@ import {AudioManager} from "./audio_manager.js";
 import {Messages} from "./messages.js";
 import {AnswerStream} from "./answer_stream.js";
 import { ChooseSubject } from "./choose_subject.js";
+import {Answer} from "./answer.js";
 
-export {whisper_api, chatgpt_api, audio_manager, answer_stream, messages, choose_subject};
+export {whisper_api, chatgpt_api, audio_manager, answer_stream, messages, choose_subject, answer};
 
 var audio_manager = new AudioManager();
 var answer_stream = new AnswerStream();
 var messages = new Messages();
 var choose_subject = new ChooseSubject(document.querySelector("div.choose_subject"));
+var answer = new Answer(document.querySelector("div.answer"));
 
 async function whisper_api(file)
 {
