@@ -42,7 +42,7 @@ export class ChooseSubject {
         document.querySelector("div.chosen_subject").innerText = subject;
 
         const question = this.subject_list.find(element => element.subject === subject).latest_result;
-        messages.messages.push({role: "assistant", content: question.replace(/{{USER_NAME}}/g, localStorage.getItem("USER_NAME"))});
+        messages.messages.push({role: "assistant", content: question.replace("{{USER_NAME}}", localStorage.getItem("USER_NAME"))});
         messages.messages_token.push(question.split(" ").length * 5);
         document.querySelector("div.api_status").innerText = "Generating audio...";
         audio_manager.push_text(question);
@@ -54,7 +54,7 @@ export class ChooseSubject {
 The example should include a greeting with '{{USER_NAME}}' and a question that conveys the intent of '${subject}', with a minimum length of 100 words. You may add any additional context or stories to the question itself that make it engaging. Please provide it in the following YAML file format.${code_block}`}];
         const generated_question = await chatgpt_api(messages_generate_question, false, false);
 
-        if (generated_question.choices && generated_questions.choices.length > 0) {
+        if (generated_question.choices && generated_question.choices.length > 0) {
             this.subject_list.forEach( (element, index) => {
                 if (element.subject === subject) {
                     this.subject_list[index].latest_result = this.subject_list.generated_question.choices[0].message.content.split("```")[1].split("question:")[1];
