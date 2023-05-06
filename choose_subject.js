@@ -41,8 +41,8 @@ export class ChooseSubject {
         // div.chosen_subject의 내용을 바꿈.
         document.querySelector("div.chosen_subject").innerText = subject;
 
-        const question = this.subject_list.find(element => element.subject === subject).latest_result;
-        messages.messages.push({role: "assistant", content: question.replace("{{USER_NAME}}", localStorage.getItem("USER_NAME"))});
+        const question = this.subject_list.find(element => element.subject === subject).latest_result.replace("{{USER_NAME}}", localStorage.getItem("USER_NAME"));
+        messages.messages.push({role: "assistant", content: question});
         messages.messages_token.push(question.split(" ").length * 5);
         document.querySelector("div.api_status").innerText = "Generating audio...";
         audio_manager.push_text(question);
