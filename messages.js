@@ -12,9 +12,9 @@ export class Messages{
         this.messages.push({role: "user", content: localStorage.getItem("SYSTEM_MESSAGE")}, {role: "user", content: content});
         this.messages_token.push(content.split(" ").length * 5);
         this.flush_if_too_many_tokens();
-        document.querySelector("div.check_grammar > button").disabled = true;
+        //document.querySelector("div.check_grammar > button").disabled = true;
         await chatgpt_api(this.messages);
-        document.querySelector("div.check_grammar > button").disabled = false;
+        //document.querySelector("div.check_grammar > button").disabled = false;
         this.messages.splice(-2, 1);
         this.messages.push({role: "assistant", content: answer_stream.answer_set});
     }
@@ -49,9 +49,9 @@ export class Messages{
         let last_message = this.messages[this.messages.length-1];
         if (last_message.role === "assistant") last_message = this.messages[this.messages.length-2];
         let messages = [{role: "user", content: ""}, {role: "user", content: `Check grammar of this message, and recommend more naturally re-written message of it if it's unnatural with explanations: "${last_message.content}"`}];
-        document.querySelector("div.check_grammar > button").disabled = true;
+        //document.querySelector("div.check_grammar > button").disabled = true;
         await chatgpt_api(messages, true, false);
-        document.querySelector("div.check_grammar > button").disabled = false;
+        //document.querySelector("div.check_grammar > button").disabled = false;
     }
 
 }

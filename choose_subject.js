@@ -41,18 +41,20 @@ export class ChooseSubject {
         // div.chosen_subject의 내용을 바꿈.
         document.querySelector("div.chosen_subject").innerText = subject;
 
-        const question = this.subject_list.find(element => element.subject === subject).latest_result.replace("{{USER_NAME}}", localStorage.getItem("USER_NAME"));
+        const question = this.subject_list.find(element => element.subject === subject).latest_result.replace("|", "").replace(/{{USER_NAME}}/g, localStorage.getItem("USER_NAME"));
         messages.messages.push({role: "assistant", content: question});
         messages.messages_token.push(question.split(" ").length * 5);
         document.querySelector("div.api_status").innerText = "Generating audio...";
-        audio_manager.push_text(question);
+        await audio_manager.push_text(question);
         document.querySelector("div.api_status").innerText = "Audio generated.";
 
         const code_block = "\n```yaml\nquestion: [greeting][a question with context or stories with a minimum length of 100 words]\n```";
         const messages_generate_question = [{role: "user", content: ""}, 
 {role: "user", content: `Can you provide me with an example of a question that a chatbot can use to initiate a conversation with a user? \
 The example should include a greeting with '{{USER_NAME}}' and a question that conveys the intent of '${subject}', with a minimum length of 100 words. You may add any additional context or stories to the question itself that make it engaging. Please provide it in the following YAML file format.${code_block}`}];
+        console.log("Generating question...");
         const generated_question = await chatgpt_api(messages_generate_question, false, false);
+        console.log("Question generated.");
 
         if (generated_question.choices && generated_question.choices.length > 0) {
             this.subject_list.forEach( (element, index) => {
