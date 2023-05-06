@@ -57,7 +57,7 @@ The example should include a greeting with '{{USER_NAME}}' and a question that c
         if (generated_question.choices && generated_question.choices.length > 0) {
             this.subject_list.forEach( (element, index) => {
                 if (element.subject === subject) {
-                    this.subject_list[index].latest_result = this.subject_list.generated_question.choices[0].message.content.split("```")[1].split("question:")[1];
+                    this.subject_list[index].latest_result = generated_question.choices[0].message.content.split("```")[1].split("question:")[1];
                 }
             });
             localStorage.setItem("SUBJECT_LIST", JSON.stringify(this.subject_list));
