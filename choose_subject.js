@@ -1,4 +1,4 @@
-import { messages, audio_manager, chatgpt_api } from "./common.js";
+import { messages, audio_manager, chatgpt_api, answer } from "./common.js";
 
 export class ChooseSubject {
     constructor($target) {
@@ -47,6 +47,7 @@ export class ChooseSubject {
         document.querySelector("div.api_status").innerText = "Generating audio...";
         await audio_manager.push_text(question);
         document.querySelector("div.api_status").innerText = "Audio generated.";
+        answer.push("answer_ai", question);
 
         const code_block = "\n```yaml\nquestion: [greeting][a question with context or stories with a minimum length of 100 words]\n```";
         const messages_generate_question = [{role: "user", content: ""}, 
