@@ -41,12 +41,6 @@ div.button > button{
     border: 0px;
 }
 
-div.answer{
-    margin: 10px;
-    width: 350px;
-    height: 100px;
-}
-
 div.check_grammar{
     width: 100%;
     justify-content: flex-start;
@@ -143,4 +137,35 @@ div.api_status {
 
 div.chosen_subject {
     border: 1px solid #ddd;
+}
+
+div.answer_wrapper {
+    width: 100%;
+    overflow-y: auto;
+    align-items: flex-end;
+}
+
+
+div.answer{
+    height: fit-content;
+    width: 100%;
+    flex-direction: column;
+    height: 100px;
+    position: relative;
+}
+
+/* div.answer 안에 들어가는 엘리먼트들은 오렌지색 버블 모양 메시지 앱 */ 
+
+div.answer > div {
+    border: 1px solid #ddd;
+    background-color: orange;
+    color: white;
+}
+
+div.answer > div.answer_ai {
+    justify-content: left;
+}
+
+div.answer > div.answer_user {
+    justify-content: right;
 }
