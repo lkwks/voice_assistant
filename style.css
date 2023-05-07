@@ -157,15 +157,19 @@ div.answer{
 /* div.answer 안에 들어가는 엘리먼트들은 오렌지색 버블 모양 메시지 앱 */ 
 
 div.answer > div {
-    border: 1px solid #ddd;
-    background-color: orange;
-    color: white;
+    border-radius: 10px;
 }
 
 div.answer > div.answer_ai {
     justify-content: left;
+    background-color: #aaa;
+    color: black;
+    border: 1px solid #ddd;
 }
 
 div.answer > div.answer_user {
     justify-content: right;
+    background-color: orange;
+    border: 1px solid orange;
+    color: white;
 }

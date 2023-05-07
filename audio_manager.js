@@ -39,7 +39,6 @@ export class AudioManager{
         let params, response, blob;
     
         if (localStorage.getItem("API_SERVICE_PROVIDER") === "google" || eleven_ranout) {
-            console.log(text);
         var langname = this.langname;
           params = {
               method: 'POST',
@@ -59,7 +58,6 @@ export class AudioManager{
           };
           response = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${localStorage.getItem("VOICE_ID_ELEVENLABS")}`, params);
           if (response.ok) {
-            console.log(text);
             blob = new Blob([await response.arrayBuffer()], { type: 'audio/mpeg' });
           }
           else

@@ -1,4 +1,4 @@
-import { audio_manager } from "./common.js";
+import { audio_manager, answer } from "./common.js";
 import {sentences} from './lib/tokenizer.js';
 
 export class AnswerStream{
@@ -21,15 +21,16 @@ export class AnswerStream{
         }
     }
     
-    async add_answer(answer, audio_mode)
+    async add_answer(answer_generated, audio_mode)
     {
-        this.answer_set += answer;
+        this.answer_set += answer_generated;
         if (audio_mode === false)
             document.querySelector("div.grammar_explanation").innerText = this.answer_set;
-        this.now_answer += answer;
+        this.now_answer += answer_generated;
         const sentences_arr = sentences(this.now_answer);
         if (sentences_arr.length > 1 && audio_mode)
         {
+            answer.push("answer_ai", sentences_arr[0]);
             await audio_manager.push_text(sentences_arr[0]);
             this.now_answer = sentences_arr[1];
         }
