@@ -1,8 +1,6 @@
 export class Answer {
     constructor($target) {
         this.$target = $target;
-        this.data = [];
-        this.render();
         // 언젠가 모든 대화 내역을 저장하는 단계로 앱을 발전시키게 되겠지만,
         // 일단 현재 단계에서는 대화 내역을 저장하는 기능 구현은 보류하고,
         // 당장 UI를 최대한 쓸만한 수준으로 구현하는 것에 집중하자.
@@ -17,5 +15,12 @@ export class Answer {
         //       그리고 그 polish 결과를 내가 소리내 읽기를 10번 하고, 그 표현을 따로 저장해뒀다가
         //       나중에 그 표현을 사용해서 대화를 시작할 수 있게 하는 기능.
         //       지금 단계에서는 이게 이 앱 구현의 최우선순위가 돼야 한다.
+    }
+
+    push(role, message) {
+        const new_element = document.createElement("div");
+        new_element.classList.add(role);
+        new_element.innerText = message;
+        this.$target.appendChild(new_element);
     }
 }
