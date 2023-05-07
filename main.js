@@ -31,12 +31,13 @@ async function start_recording()
         
           document.querySelector("div.api_status").innerHTML = `Generating audio...`;
           var time_before_whisper_api = new Date().getTime();
-          setTimeout(()=>{if (document.querySelector("div.api_status").innerHTML === `Generating audio...`) document.querySelector("div.answer").innerHTML = `Timeout! Try it again.`;}, 8000);
+          setTimeout(()=>{if (document.querySelector("div.api_status").innerHTML === `Generating audio...`) document.querySelector("div.api_status").innerHTML = `Timeout! Try it again.`;}, 8000);
           var result = await whisper_api(file);
           if (new Date().getTime() - time_before_whisper_api < 8000)
           {
             if (result.text)
             {
+                document.querySelector("div.api_status").innerHTML = `Audio generated.`;
                 answer.push("answer_user", result.text);
 
                 if (result.text !== "") audio_manager.play_q = [];
