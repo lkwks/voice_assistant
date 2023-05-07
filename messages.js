@@ -1,4 +1,4 @@
-import { answer_stream, chatgpt_api } from "./common.js";
+import { answer_stream, chatgpt_api, answer } from "./common.js";
 
 export class Messages{
     constructor()
@@ -15,6 +15,7 @@ export class Messages{
         //document.querySelector("div.check_grammar > button").disabled = true;
         await chatgpt_api(this.messages);
         //document.querySelector("div.check_grammar > button").disabled = false;
+        answer.push("answer_ai", content);
         this.messages.splice(-2, 1);
         this.messages.push({role: "assistant", content: answer_stream.answer_set});
     }
